@@ -1,18 +1,30 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+// https://github.com/ferrerojosh/nest-keycloak-connect/blob/v1.0/example/src/app.controller.ts
+import { Controller, Get } from '@nestjs/common';
+import { AuthenticatedUser, Public, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
 
-import { AppService } from './app.service';
-import { AuthenticationGuard } from './authentication/authentication.guard';
-
-@UseGuards(AuthenticationGuard)
 @Controller()
 export class AppController {
-
-    constructor(
-        private readonly appService: AppService
-    ) {}
-
-    @Get()
-    getHello(): string {
-        return this.appService.getHello();
+  @Get()
+  @Public(false)
+  getHello(
+    @AuthenticatedUser()
+    user: any,
+  ): string {
+    if (user) {
+      return `Hello ${user.preferred_username}`;
+    } else {
+      return 'Hello world!';
     }
+  }
+
+  @Get('private')
+  getPrivate() {
+    return 'Authenticated only!';
+  }
+
+  @Get('admin')
+  @Roles({ roles: ['admin'], mode: RoleMatchingMode.ALL })
+  adminRole() {
+    return 'Admin only!'
+  }
 }
