@@ -18,9 +18,9 @@ export class DesfechocriancaexpostahivService {
 
   async findAll() {
     return await this.prisma.tb_desfecho_criancaexposta_hiv.findMany({
-      include: {
-        tb_monitora_criancaexposta_hiv: true,
-      },
+      //include: {
+      //  tb_monitora_criancaexposta_hiv: true,
+      //},
     })
   }
 

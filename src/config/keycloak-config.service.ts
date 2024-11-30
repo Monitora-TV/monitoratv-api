@@ -8,8 +8,8 @@ export class KeycloakConfigService implements KeycloakConnectOptionsFactory {
     return {
       authServerUrl: 'https://keycloak.gustavokanashiro.com/auth',
       realm: 'monitoratv',
-      clientId: 'localhost-dev',
-      secret: 'BA2jTN57m4UCHbNl5D9VXpEeROg8HLGK',
+      clientId: 'localhost-backend',
+      secret: 'Ni9HaVdGjkqm9hpkbqJ4PAEnnG94t3wb',
     };
   }
 }

@@ -12,7 +12,6 @@ import {
 import { DesfechocriancaexpostahivService } from './desfechocriancaexpostahiv.service';
 import { CreateDesfechocriancaexpostahivDto } from './dto/create-desfechocriancaexpostahiv.dto';
 import { UpdateDesfechocriancaexpostahivDto } from './dto/update-desfechocriancaexpostahiv.dto';
-import { AuthenticationGuard } from '../authentication/authentication.guard';
 import { Public, Resource, Roles, Scopes, Unprotected } from 'nest-keycloak-connect';
 
 
@@ -20,7 +19,7 @@ import { Public, Resource, Roles, Scopes, Unprotected } from 'nest-keycloak-conn
 
 
 @Controller('desfechocriancaexpostahiv')
-@Resource('Desfechocriancaexpostahiv')
+//@Resource('Desfechocriancaexpostahiv')
 export class DesfechocriancaexpostahivController {
   constructor(private readonly desfechocriancaexpostahivService: DesfechocriancaexpostahivService) {}
 
