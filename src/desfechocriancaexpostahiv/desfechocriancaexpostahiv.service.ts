@@ -2,11 +2,18 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateDesfechocriancaexpostahivDto } from './dto/create-desfechocriancaexpostahiv.dto';
 import { UpdateDesfechocriancaexpostahivDto } from './dto/update-desfechocriancaexpostahiv.dto';
 import { PrismaService } from 'src/database/prisma.service';
+import { TenantService } from 'src/tenant/tenant/tenant.service';
 
 @Injectable()
 export class DesfechocriancaexpostahivService {
   @Inject()
   private readonly prisma: PrismaService;
+
+  @Inject()
+  private readonly tenantService: TenantService;
+
+
+
 
   // Método para criar um novo registro
   async create(createDesfechocriancaexpostahivDto: CreateDesfechocriancaexpostahivDto) {
@@ -36,6 +43,7 @@ export class DesfechocriancaexpostahivService {
 
   // Método para obter todos os registros
   async findAll() {
+    console.log(this.tenantService.hierarquia_acesso)
     return await this.prisma.tb_desfecho_criancaexposta_hiv.findMany();
   }
 

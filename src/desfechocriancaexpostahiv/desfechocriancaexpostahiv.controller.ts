@@ -8,14 +8,14 @@ import {
   Post,
   Put,
   Patch,
+  UseGuards,
 } from '@nestjs/common';
 import { DesfechocriancaexpostahivService } from './desfechocriancaexpostahiv.service';
 import { CreateDesfechocriancaexpostahivDto } from './dto/create-desfechocriancaexpostahiv.dto';
 import { UpdateDesfechocriancaexpostahivDto } from './dto/update-desfechocriancaexpostahiv.dto';
 import { Public, Resource, Roles, Scopes, Unprotected } from 'nest-keycloak-connect';
-
-
-
+import { TenantGuard } from './../tenant/tenant.guard';
+import { JwtGuard } from './../auth/auth/jwt.guard';
 
 
 @Controller('desfechocriancaexpostahiv')
@@ -23,12 +23,14 @@ import { Public, Resource, Roles, Scopes, Unprotected } from 'nest-keycloak-conn
 export class DesfechocriancaexpostahivController {
   constructor(private readonly desfechocriancaexpostahivService: DesfechocriancaexpostahivService) {}
 
+  @UseGuards(JwtGuard, TenantGuard)
   @Post()
   create(@Body() createDesfechocriancaexpostahivDto: CreateDesfechocriancaexpostahivDto) {
     return this.desfechocriancaexpostahivService.create(createDesfechocriancaexpostahivDto);
   }
 
 
+  @UseGuards(JwtGuard, TenantGuard)
   @Get()
   @Public(false)
   @Scopes('View')

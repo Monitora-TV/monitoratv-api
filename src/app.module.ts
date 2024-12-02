@@ -6,6 +6,7 @@ import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './database/prisma.service';
 import { DesfechocriancaexpostahivModule } from './desfechocriancaexpostahiv/desfechocriancaexpostahiv.module';
 import { DatabaseModule } from './database/database.module';
+import { TenantModule } from './tenant/tenant.module';
 
 
 @Module({
@@ -15,7 +16,8 @@ import { DatabaseModule } from './database/database.module';
     }),
     AuthModule,
     DatabaseModule,
-    DesfechocriancaexpostahivModule
+    DesfechocriancaexpostahivModule,
+    TenantModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
