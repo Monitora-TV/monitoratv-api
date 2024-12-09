@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -7,7 +7,7 @@ import { PrismaService } from './database/prisma.service';
 import { DesfechocriancaexpostahivModule } from './desfechocriancaexpostahiv/desfechocriancaexpostahiv.module';
 import { DatabaseModule } from './database/database.module';
 import { TenantModule } from './tenant/tenant.module';
-
+import { AuthMiddleware } from './middleware/auth.middleware';  // Importe o AuthMiddleware
 
 @Module({
   imports: [
@@ -22,4 +22,11 @@ import { TenantModule } from './tenant/tenant.module';
   controllers: [AppController],
   providers: [AppService, PrismaService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    // Registre o middleware para todas as rotas ou para rotas específicas
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes('*');  // Aplica o middleware em todas as rotas ou você pode definir rotas específicas aqui
+  }
+}
