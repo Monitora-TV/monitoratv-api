@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { PrismaService } from './database/prisma.service';
+import { CriancaexpostahivModule } from './criancaexpostahiv/criancaexpostahiv.module';
 import { DesfechocriancaexpostahivModule } from './desfechocriancaexpostahiv/desfechocriancaexpostahiv.module';
 import { DatabaseModule } from './database/database.module';
 import { TenantModule } from './tenant/tenant.module';
@@ -17,6 +18,7 @@ import { AuthMiddleware } from './middleware/auth.middleware';  // Importe o Aut
     AuthModule,
     DatabaseModule,
     DesfechocriancaexpostahivModule,
+    CriancaexpostahivModule,
     TenantModule
   ],
   controllers: [AppController],
