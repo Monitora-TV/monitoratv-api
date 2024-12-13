@@ -16,6 +16,8 @@ export async function createDecodeAccessToken() {
       preferred_username: z.string(),
       name: z.string(),
       email: z.string(),
+      cnes_vinculo: z.string(),
+      hierarquia_acesso: z.string(),
     }),
   });
 

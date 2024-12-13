@@ -2,7 +2,6 @@ import { tb_monitora_criancaexposta_hiv } from '@prisma/client';
 
 export class Criancaexpostahiv implements tb_monitora_criancaexposta_hiv {
   id: number;
-  
   id_paciente: number;
   id_monitora_gestante_hiv: number;
   id_sinan_notificacao: number;

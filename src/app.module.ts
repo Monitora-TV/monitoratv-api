@@ -9,6 +9,7 @@ import { DesfechocriancaexpostahivModule } from './desfechocriancaexpostahiv/des
 import { DatabaseModule } from './database/database.module';
 import { TenantModule } from './tenant/tenant.module';
 import { AuthMiddleware } from './middleware/auth.middleware';  // Importe o AuthMiddleware
+import { UnidadesaudeModule } from './unidadesaude/unidadesaude.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { AuthMiddleware } from './middleware/auth.middleware';  // Importe o Aut
     DatabaseModule,
     DesfechocriancaexpostahivModule,
     CriancaexpostahivModule,
-    TenantModule
+    TenantModule,
+    UnidadesaudeModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

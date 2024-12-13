@@ -6,6 +6,7 @@ import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação 
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
 
+
 @ApiTags('Desfecho Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
 @Controller('desfechocriancaexpostahiv')
 export class DesfechocriancaexpostahivController {

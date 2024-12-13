@@ -22,14 +22,24 @@ export class CriancaexpostahivController {
   }
 
 
+  // Rota para listar todos os registros de Criança Exposta
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Get()
-  async getByCnes(
+  @ApiOperation({ summary: 'Listar todos os registros de Criança Exposta' })
+  @ApiResponse({ status: 200, description: 'Lista de Criança Exposta retornada.' })
+  async findAll() {
+    return await this.criancaexpostahivService.findAll();
+  }
+
+
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get()
+    async getByCnes(
     @Query('cnes_coordenadoria') cnes_coordenadoria: string,
     @Query('cnes_supervisao') cnes_supervisao: string,
     @Query('cnes_uvis') cnes_uvis: string
   )
-  {
+ {
   // Verificar qual parâmetro está presente e chamar o método correspondente
   if (cnes_coordenadoria) {
     return this.criancaexpostahivService.findByCoordenadoria(cnes_coordenadoria);
@@ -45,18 +55,10 @@ export class CriancaexpostahivController {
 
   // Se nenhum parâmetro for passado, você pode retornar uma resposta padrão ou um erro.
   //return { message: 'Nenhum parâmetro válido foi fornecido.' };
-  return this.criancaexpostahivService.findAll();
+  return await this.criancaexpostahivService.findAll();
   }
 
 
-  // Rota para listar todos os registros de Criança Exposta
-  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
-  @Get()
-  @ApiOperation({ summary: 'Listar todos os registros de Criança Exposta' })
-  @ApiResponse({ status: 200, description: 'Lista de Criança Exposta retornada.' })
-  async findAll() {
-    return await this.criancaexpostahivService.findAll();
-  }
 
   // Rota para buscar um registro específico de Criança Exposta por ID
   @Get(':id')
