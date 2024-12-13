@@ -1,10 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
 import { UnidadesaudeService } from './unidadesaude.service';
 import { CreateUnidadesaudeDto } from './dto/create-unidadesaude.dto';
 import { UpdateUnidadesaudeDto } from './dto/update-unidadesaude.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
+import { query } from 'express';
+import { tb_unidade_saude } from '@prisma/client';
 
 
 @ApiTags('Unidade de Saude') // Define o grupo de tags para a documentação OpenAPI
@@ -19,6 +21,31 @@ export class UnidadesaudeController {
   @ApiResponse({ status: 201, description: 'Registro de unidade de saude criado com sucesso.' })
   create(@Body() createUnidadesaudeDto: CreateUnidadesaudeDto) {
     return this.unidadesaudeService.create(createUnidadesaudeDto);
+  }
+
+
+  // Rota para listar todos os registros com condicao
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('filter/:searchString')
+  async getFilteredUnidades(
+    @Param('searchString') searchString: string,
+  ): Promise<tb_unidade_saude[]> {
+    return this.unidadesaudeService.unidades({
+      where: {
+        OR: [
+          {
+            no_unidade: { contains: searchString },
+          },
+          {
+            no_unidade_limpo: { contains: searchString },
+          },
+          {
+            cnes_unidade: { contains: searchString },
+          },
+        ],
+      },
+      orderBy: {no_unidade: 'asc'}
+    });
   }
 
   // Rota para listar todos os registros 

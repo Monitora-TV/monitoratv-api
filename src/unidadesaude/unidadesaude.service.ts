@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { CreateUnidadesaudeDto } from './dto/create-unidadesaude.dto';
 import { UpdateUnidadesaudeDto } from './dto/update-unidadesaude.dto';
-import { FindUnidadesaudeDto } from './dto/find-unidadesaude.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { string } from 'zod';
+import { Prisma, tb_unidade_saude } from '@prisma/client';
+
 
 
 @Injectable()
@@ -15,6 +17,24 @@ export class UnidadesaudeService {
   private readonly tenantService: TenantService;
 
 
+
+  async unidades(params: {
+    skip?: number;
+    take?: number;
+    cursor?: Prisma.tb_unidade_saudeWhereUniqueInput;
+    where?: Prisma.tb_unidade_saudeWhereInput;
+    orderBy?: Prisma.tb_unidade_saudeOrderByWithRelationInput;
+  }): Promise<tb_unidade_saude[]> {
+    const { skip, take, cursor, where, orderBy } = params;
+    return this.prisma.tb_unidade_saude.findMany({
+      skip,
+      take,
+      cursor,
+      where,
+      orderBy,
+    });
+  }
+  
   // Método para criar um novo registro
   async create(createUnidadesaudeDto: CreateUnidadesaudeDto) {
     const existingRecord = await this.prisma.tb_unidade_saude.findFirst({
@@ -39,13 +59,6 @@ export class UnidadesaudeService {
     console.log(this.tenantService.hierarquia_acesso);
     return await this.prisma.tb_unidade_saude.findMany();
   }
-
-  async findMany(findUnidadesaudeDto: FindUnidadesaudeDto) {
-    //const  { no_unidade, cnes_unidade, no_unidade_limpo }
-
-  };
-  
-
 
 
   // Método para encontrar um registro específico por id
