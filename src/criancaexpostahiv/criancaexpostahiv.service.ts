@@ -51,7 +51,7 @@ export class CriancaexpostahivService {
 
     if (hierarquia_acesso === 'supervisao_tecnica') {
       filter_unidade_monitoramento = {
-        tb_supervisao_unidade_saude: {
+        tb_supervisao: {
           cnes_supervisao: cnes_vinculo,
         },
       };
@@ -73,11 +73,13 @@ export class CriancaexpostahivService {
         include: {
           tb_maternidade: {
             select: {
+              cnes_unidade:true,
               no_unidade: true,
             },
           },
           tb_unidade_monitoramento: {
             select: {
+              cnes_unidade: true,
               no_unidade: true,
               tb_coordenadoria: { select: { no_coordenadoria: true } },
               tb_supervisao_to_unidade_saude: { select: { no_supervisao: true } },
@@ -201,7 +203,7 @@ export class CriancaexpostahivService {
       where: {
         tb_unidade_monitoramento: 
         {
-          tb_supervisao_to_unidade_saude: {cnes_supervisao : cnes_supervisao }   
+          tb_supervisao: {cnes_supervisao : cnes_supervisao }   
         }
       },
       include: {

@@ -34,17 +34,34 @@ export class UnidadesaudeController {
       where: {
         OR: [
           {
-            no_unidade: { contains: searchString },
+            no_unidade: { contains: searchString.toUpperCase() },
           },
           {
-            no_unidade_limpo: { contains: searchString },
+            no_unidade_limpo: { contains: searchString.toUpperCase() },
           },
           {
             cnes_unidade: { contains: searchString },
           },
         ],
       },
-      orderBy: {no_unidade: 'asc'}
+      orderBy: {no_unidade: 'asc'},
+      include: {
+        tb_coordenadoria: {
+          select: {
+            no_coordenadoria: true,
+          },
+        },
+        tb_supervisao : {
+          select: {
+            no_supervisao: true,
+          },
+        },
+        tb_uvis: {
+          select: {
+            no_uvis: true,
+          },
+        },
+      },
     });
   }
 

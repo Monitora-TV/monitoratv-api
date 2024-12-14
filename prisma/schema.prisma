@@ -224,13 +224,13 @@ model tb_monitora_criancaexposta_hiv {
   id_origem_monitoramento                                                                       Int?
   id_usuario                                                                                    Int?
   dt_atualizacao                                                                                DateTime                        @db.Date
-  tb_desfecho_criancaexposta_hiv                                                                tb_desfecho_criancaexposta_hiv? @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
-  tb_maternidade                                                                                tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
-  tb_origem_desfecho                                                                            tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
-  tb_origem_origem                                                                              tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
-  tb_paciente                                                                                   tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
-  tb_sinan_notificacao                                                                          tb_sinan_notificacao?           @relation(fields: [id_sinan_notificacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_sinan")
-  tb_unidade_monitoramento                                                                      tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
+  tb_desfecho_criancaexposta_hiv  tb_desfecho_criancaexposta_hiv? @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
+  tb_maternidade                  tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
+  tb_origem_desfecho              tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
+  tb_origem_origem                tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
+  tb_paciente                     tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
+  tb_sinan_notificacao            tb_sinan_notificacao?           @relation(fields: [id_sinan_notificacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_sinan")
+  tb_unidade_monitoramento        tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
 
   @@index([id_paciente], map: "idx_tbmonitcriexphiv_idpaciente")
 }
@@ -752,17 +752,17 @@ model tb_situacao_familiar_siga {
 }
 
 model tb_supervisao {
-  id                                                                Int                    @id @default(autoincrement())
-  id_coordenadoria                                                  Int?
-  cnes_supervisao                                                   String?                @db.VarChar(10)
-  no_supervisao                                                     String?                @db.VarChar(100)
-  id_unidade_saude                                                  Int?
-  tb_laboratorio                                                    tb_laboratorio[]
-  tb_maternidade                                                    tb_maternidade[]
-  tb_coordenadoria                                                  tb_coordenadoria?      @relation(fields: [id_coordenadoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_coordenadoria")
-  tb_unidade_saude tb_unidade_saude?      @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_unidade")
-  tb_unidade_saude_by_supervisao        tb_unidade_saude[]     @relation("tb_unidade_saude_id_supervisaoTotb_supervisao")
-  tb_unidade_saude_sae_by_supervisao    tb_unidade_saude_sae[]
+  id                                    Int                    @id @default(autoincrement())
+  id_coordenadoria                      Int?
+  cnes_supervisao                       String?                @db.VarChar(10)
+  no_supervisao                         String?                @db.VarChar(100)
+  id_unidade_saude                      Int?
+  tb_laboratorio                        tb_laboratorio[]
+  tb_maternidade                        tb_maternidade[]
+  tb_coordenadoria                      tb_coordenadoria?      @relation(fields: [id_coordenadoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_coordenadoria")
+  tb_unidade_saude                      tb_unidade_saude?      @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_unidade")
+  tb_unidade_saude_to_supervisao        tb_unidade_saude[]     @relation("tb_unidade_saude_id_supervisaoTotb_supervisao")
+  tb_unidade_saude_sae_to_supervisao    tb_unidade_saude_sae[]
   tb_uvis                                                           tb_uvis[]
 
   @@index([no_supervisao], map: "idx_tb_supervisao_no")
@@ -892,9 +892,9 @@ model tb_unidade_saude {
   tb_gestante_hiv_uniacolh_prenatal   tb_monitora_gestante_hiv[]       @relation("tb_monitora_gestante_hiv_id_unidade_acolhimento_prenatalTotb_unidade_saude")
   tb_gestante_hiv_unicns_puerpera     tb_monitora_gestante_hiv[]       @relation("tb_monitora_gestante_hiv_id_unidade_consulta_puerperalTotb_unidade_saude")
   tb_gestante_hiv_unimonitoramento    tb_monitora_gestante_hiv[]       @relation("tb_monitora_gestante_hiv_id_unidade_monitoramentoTotb_unidade_saude")
-  tb_supervisao                       tb_supervisao[]                  @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude")
+  tb_supervisao_to_unidade_saude      tb_supervisao[]                  @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude")
   tb_coordenadoria                    tb_coordenadoria?                @relation("tb_unidade_saude_id_coordenadoriaTotb_coordenadoria", fields: [id_coordenadoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidade_coordenadoria")
-  tb_supervisao_to_unidade_saude      tb_supervisao?                   @relation("tb_unidade_saude_id_supervisaoTotb_supervisao", fields: [id_supervisao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidade_supervisao")
+  tb_supervisao                       tb_supervisao?                   @relation("tb_unidade_saude_id_supervisaoTotb_supervisao", fields: [id_supervisao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidade_supervisao")
   tb_uvis                             tb_uvis?                         @relation("tb_unidade_saude_id_uvisTotb_uvis", fields: [id_uvis], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidade_uvis")
   tb_unidade_saude_matrix             tb_unidade_saude_matrix[]
   tb_unidade_saude_sae                tb_unidade_saude_sae[]

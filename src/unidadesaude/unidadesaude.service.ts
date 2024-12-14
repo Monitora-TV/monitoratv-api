@@ -24,14 +24,16 @@ export class UnidadesaudeService {
     cursor?: Prisma.tb_unidade_saudeWhereUniqueInput;
     where?: Prisma.tb_unidade_saudeWhereInput;
     orderBy?: Prisma.tb_unidade_saudeOrderByWithRelationInput;
+    include?: Prisma.tb_unidade_saudeInclude;
   }): Promise<tb_unidade_saude[]> {
-    const { skip, take, cursor, where, orderBy } = params;
+    const { skip, take, cursor, where, orderBy, include } = params;
     return this.prisma.tb_unidade_saude.findMany({
       skip,
       take,
       cursor,
       where,
       orderBy,
+      include,
     });
   }
   
