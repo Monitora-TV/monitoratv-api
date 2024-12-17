@@ -81,6 +81,9 @@ export class CriancaexpostahivService {
             select: {
               cnes_unidade: true,
               no_unidade: true,
+              id_coordenadoria: true,
+              id_supervisao: true,
+              id_uvis: true,
               tb_coordenadoria: { select: { no_coordenadoria: true } },
               tb_supervisao_to_unidade_saude: { select: { no_supervisao: true } },
               tb_uvis: { select: { no_uvis: true } },
