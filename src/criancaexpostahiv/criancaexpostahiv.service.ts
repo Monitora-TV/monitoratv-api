@@ -275,7 +275,52 @@ export class CriancaexpostahivService {
 
 
 
+  // Método para contar crianças expostas por desfecho
+  async countCriancaexpostahivByDesfechoId(): Promise<CountCriancaexpostahiv[]> {
+    try {
+      // Passo 1: Agrupar os registros por id_desfecho_criexp_hiv e contar as ocorrências
+      const result = await this.prisma.tb_monitora_criancaexposta_hiv.groupBy({
+        by: ['id_desfecho_criexp_hiv'], // Agrupar pelo id do desfecho
+        _count: {
+          id_desfecho_criexp_hiv: true, // Contar os registros para cada desfecho
+        },
+      });
+
+      // Passo 2: Buscar os nomes dos desfechos usando os IDs
+      const desfechos = await this.prisma.tb_desfecho_criancaexposta_hiv.findMany({
+        where: {
+          id: {
+            in: result.map(item => item.id_desfecho_criexp_hiv), // Buscar todos os desfechos que aparecem no resultado
+          },
+        },
+        select: {
+          id: true, // Garantir que estamos pegando os IDs
+          no_desfecho_criancaexposta_hiv: true, // Buscar o nome do desfecho
+        },
+      });
+
+      // Passo 3: Combinar os resultados (contagem e nomes)
+      const countResult: CountCriancaexpostahiv[] = result.map(item => {
+        const desfecho = desfechos.find(d => d.id === item.id_desfecho_criexp_hiv);
+        return {
+          id_desfecho_criexp_hiv: item.id_desfecho_criexp_hiv,
+          no_desfecho_criancaexposta_hiv: desfecho ? desfecho.no_desfecho_criancaexposta_hiv : 'Desfecho não encontrado',
+          total: item._count.id_desfecho_criexp_hiv,
+        };
+      });
+
+      return countResult;
+    } catch (error) {
+      throw new Error('Erro ao contar crianças expostas por desfecho: ' + error.message);
+    }
+  }
+  
+
+
+
 }
+
+
 
 
 

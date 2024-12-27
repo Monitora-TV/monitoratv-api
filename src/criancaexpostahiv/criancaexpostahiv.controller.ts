@@ -5,6 +5,7 @@ import { UpdateCriancaexpostahivDto } from './dto/update-criancaexpostahiv.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
+import { CountCriancaexpostahiv } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
 import { any } from 'zod';
 
 @ApiTags('Monitora Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
@@ -12,8 +13,15 @@ import { any } from 'zod';
 export class CriancaexpostahivController {
   constructor(private readonly criancaexpostahivService: CriancaexpostahivService) {}
 
-  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  // Endpoint para contar registros de Criança Exposta por Desfecho
+  @Get('count-by-desfecho')
+  @ApiOperation({ summary: 'Contar registros de Criança Exposta por Desfecho' })
+  @ApiResponse({ status: 200, description: 'Contagem de registros retornada.' })
+  async countCriancaexpostahivByDesfechoId() {
+    return await this.criancaexpostahivService.countCriancaexpostahivByDesfechoId();
+  }  
 
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Post()
   @ApiOperation({ summary: 'Criar um novo registro de de Criança Exposta' })
   @ApiResponse({ status: 201, description: 'Registro de Criança Exposta criado com sucesso.' })
@@ -92,4 +100,16 @@ export class CriancaexpostahivController {
   }
 
   
+
+  // Rota para contar as crianças expostas agrupadas por desfecho
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('count-by-desfecho')
+  @ApiOperation({ summary: 'Contar as crianças expostas agrupadas por desfecho' })
+  @ApiResponse({ status: 200, description: 'Contagem de Crianças Expostas agrupadas por desfecho' })
+  async countCriancaexpostahivByDesfecho(): Promise<CountCriancaexpostahiv[]> {
+    return this.criancaexpostahivService.countCriancaexpostahivByDesfechoId();
+  }
+
+
+
 }
