@@ -5,7 +5,7 @@ import { UpdateCriancaexpostahivDto } from './dto/update-criancaexpostahiv.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
-import { CountCriancaexpostahiv } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
+import { CountCriancaexpostahivAnoDesfecho, CountCriancaexpostahivPorAnoInicio } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
 import { any } from 'zod';
 
 @ApiTags('Monitora Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
@@ -14,12 +14,23 @@ export class CriancaexpostahivController {
   constructor(private readonly criancaexpostahivService: CriancaexpostahivService) {}
 
   // Endpoint para contar registros de Criança Exposta por Desfecho
-  @Get('count-by-desfecho')
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('count-ano-desfecho')
   @ApiOperation({ summary: 'Contar registros de Criança Exposta por Desfecho' })
   @ApiResponse({ status: 200, description: 'Contagem de registros retornada.' })
-  async countCriancaexpostahivByDesfechoId() {
-    return await this.criancaexpostahivService.countCriancaexpostahivByDesfechoId();
+  async countCriancaExpostaPorAnoDesfecho() {
+    return await this.criancaexpostahivService.countCriancaExpostaPorAnoDesfecho();
   }  
+
+  // Rota para contar as crianças expostas agrupadas por desfecho
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('count-ano-monitoramento')
+  @ApiOperation({ summary: 'Contar as crianças expostas agrupadas por desfecho' })
+  @ApiResponse({ status: 200, description: 'Contagem de Crianças Expostas agrupadas por desfecho' })
+  async countCriancaExpostaPorAnoInicio(): Promise<CountCriancaexpostahivPorAnoInicio[]> {
+    return this.criancaexpostahivService.countCriancaExpostaPorAnoInicio();
+  }
+
 
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Post()
@@ -39,44 +50,14 @@ export class CriancaexpostahivController {
     return await this.criancaexpostahivService.findAll();
   }
 
-
-  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
-  @Get()
-    async getByCnes(
-    @Query('cnes_coordenadoria') cnes_coordenadoria: string,
-    @Query('cnes_supervisao') cnes_supervisao: string,
-    @Query('cnes_uvis') cnes_uvis: string
-  )
- {
-  // Verificar qual parâmetro está presente e chamar o método correspondente
-  if (cnes_coordenadoria) {
-    return this.criancaexpostahivService.findByCoordenadoria(cnes_coordenadoria);
-  }
-  
-  if (cnes_supervisao) {
-    return this.criancaexpostahivService.findBySupervisao(cnes_supervisao);
-  }
-
-  if (cnes_uvis) {
-    return this.criancaexpostahivService.findByUvis(cnes_uvis);
-  }
-
-  // Se nenhum parâmetro for passado, você pode retornar uma resposta padrão ou um erro.
-  //return { message: 'Nenhum parâmetro válido foi fornecido.' };
-  return await this.criancaexpostahivService.findAll();
-  }
-
-
-
   // Rota para buscar um registro específico de Criança Exposta por ID
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Get(':id')
   @ApiOperation({ summary: 'Buscar um registro de Criança Exposta por ID' })
   @ApiResponse({ status: 200, description: 'Criança Exposta encontrado.' })
   findOne(@Param('id') id: string) {
     return this.criancaexpostahivService.findOne(+id); // O id é convertido para número
   }
-
-
 
   // Rota para atualizar um registro de desfecho
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
@@ -98,18 +79,6 @@ export class CriancaexpostahivController {
   remove(@Param('id') id: string) {
     return this.criancaexpostahivService.remove(+id); // O id é convertido para número
   }
-
-  
-
-  // Rota para contar as crianças expostas agrupadas por desfecho
-  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
-  @Get('count-by-desfecho')
-  @ApiOperation({ summary: 'Contar as crianças expostas agrupadas por desfecho' })
-  @ApiResponse({ status: 200, description: 'Contagem de Crianças Expostas agrupadas por desfecho' })
-  async countCriancaexpostahivByDesfecho(): Promise<CountCriancaexpostahiv[]> {
-    return this.criancaexpostahivService.countCriancaexpostahivByDesfechoId();
-  }
-
 
 
 }

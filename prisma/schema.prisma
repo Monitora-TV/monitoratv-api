@@ -7,26 +7,10 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model tb_alerta_crianca_exposta_hiv {
-  id                                     Int     @id @default(autoincrement())
-  no_alerta_crianca_exposta_hiv          String  @db.VarChar(100)
-  ds_alerta_reduzido_crianca_exposta_hiv String? @db.VarChar(50)
-}
-
 model tb_alerta_gestante_hiv {
   id                              Int     @id @default(autoincrement())
   no_alerta_gestante_hiv          String  @db.VarChar(100)
   ds_alerta_reduzido_gestante_hiv String? @db.VarChar(50)
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
-model tb_classificacao_servico {
-  co_classificacao_servico String? @db.VarChar(3)
-  co_servico_especializado String? @db.VarChar(3)
-  ds_classificacao_servico String? @db.VarChar(100)
-
-  @@unique([co_classificacao_servico, co_servico_especializado], map: "td_classificacao_servico_co_classificacao_servico_co_servic_key")
-  @@ignore
 }
 
 model tb_consulta_puerperal_siga {
@@ -190,52 +174,51 @@ model tb_matrix_exame_hiv {
 }
 
 model tb_monitora_criancaexposta_hiv {
-  id                                                                                            Int                             @id @default(autoincrement())
-  id_paciente                                                                                   Int?
-  id_monitora_gestante_hiv                                                                      Int?
-  id_sinan_notificacao                                                                          Int?
-  nu_notific_sinan                                                                              String?                         @db.VarChar(10)
-  dt_notific_sinan                                                                              DateTime?                       @db.Date
-  id_unidade_notific_sinan                                                                      Int?
-  id_maternidade_nascimento                                                                     Int?
-  dt_saida_maternidade                                                                          DateTime?                       @db.Date
-  dt_inicio_monitoramento                                                                       DateTime?                       @db.Date
-  id_unidade_monitoramento                                                                      Int?
-  id_desfecho_criexp_hiv                                                                        Int?
-  dt_desfecho_criexp_hiv                                                                        DateTime?                       @db.Date
-  id_origem_desfecho                                                                            Int?
-  dt_diagnostico_hiv                                                                            DateTime?                       @db.Date
-  id_matrix_exame_hiv_diagnostico                                                               Int?
-  matrix_exame_conclusao_diagnostico                                                            String?                         @db.VarChar(250)
-  id_tipo_resultado_elisa_diagnostico                                                           Int?
-  id_tipo_resultado_hivib_diagnostico                                                           Int?
-  flg_coleta_cv_nascimento                                                                      Boolean?
-  flg_arv_nascimento                                                                            Boolean?
-  id_arv_nascimento_periodo                                                                     Int?
-  id_tarv_esquema                                                                               Int?
-  flg_tarv_28_dias                                                                              Boolean?
-  id_siscel_cv_primeira                                                                         Int?
-  id_siscel_cv_penultima                                                                        Int?
-  id_siscel_cv_ultima                                                                           Int?
-  id_matrix_exahiv_ultima_pos_12                                                                Int?
-  id_matrix_exahiv_ultima_pos_18                                                                Int?
-  id_matrix_exahiv_primeiro                                                                     Int?
-  dt_inicio_profilaxia                                                                          DateTime?                       @db.Date
-  id_origem_monitoramento                                                                       Int?
-  id_usuario                                                                                    Int?
-  dt_atualizacao                                                                                DateTime                        @db.Date
-  tb_desfecho_criancaexposta_hiv  tb_desfecho_criancaexposta_hiv? @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
-  tb_maternidade                  tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
-  tb_origem_desfecho              tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
-  tb_origem_origem                tb_origem_cadastro?             @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
-  tb_paciente                     tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
-  tb_sinan_notificacao            tb_sinan_notificacao?           @relation(fields: [id_sinan_notificacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_sinan")
-  tb_unidade_monitoramento        tb_unidade_saude?               @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
+  id                                         Int                                          @id @default(autoincrement())
+  id_paciente                                Int?
+  id_monitora_gestante_hiv                   Int?
+  id_sinan_notificacao                       Int?
+  nu_notific_sinan                           String?                                      @db.VarChar(10)
+  dt_notific_sinan                           DateTime?                                    @db.Date
+  id_unidade_notific_sinan                   Int?
+  id_maternidade_nascimento                  Int?
+  dt_saida_maternidade                       DateTime?                                    @db.Date
+  dt_inicio_monitoramento                    DateTime?                                    @db.Date
+  id_unidade_monitoramento                   Int?
+  id_desfecho_criexp_hiv                     Int?
+  dt_desfecho_criexp_hiv                     DateTime?                                    @db.Date
+  id_origem_desfecho                         Int?
+  dt_diagnostico_hiv                         DateTime?                                    @db.Date
+  id_matrix_exame_hiv_diagnostico            Int?
+  matrix_exame_conclusao_diagnostico         String?                                      @db.VarChar(250)
+  id_tipo_resultado_elisa_diagnostico        Int?
+  id_tipo_resultado_hivib_diagnostico        Int?
+  flg_coleta_cv_nascimento                   Boolean?
+  flg_arv_nascimento                         Boolean?
+  id_arv_nascimento_periodo                  Int?
+  id_tarv_esquema                            Int?
+  flg_tarv_28_dias                           Boolean?
+  id_siscel_cv_primeira                      Int?
+  id_siscel_cv_penultima                     Int?
+  id_siscel_cv_ultima                        Int?
+  id_matrix_exahiv_ultima_pos_12             Int?
+  id_matrix_exahiv_ultima_pos_18             Int?
+  id_matrix_exahiv_primeiro                  Int?
+  dt_inicio_profilaxia                       DateTime?                                    @db.Date
+  id_origem_monitoramento                    Int?
+  id_usuario                                 Int?
+  dt_atualizacao                             DateTime                                     @db.Date
+  tb_alerta_criancaexposta_hiv_monitoramento tb_alerta_criancaexposta_hiv_monitoramento[]
+  tb_desfecho_criancaexposta_hiv             tb_desfecho_criancaexposta_hiv?              @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
+  tb_maternidade                             tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
+  tb_origem_desfecho                         tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
+  tb_origem_origem                           tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
+  tb_paciente                                tb_paciente?                                 @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
+  tb_sinan_notificacao                       tb_sinan_notificacao?                        @relation(fields: [id_sinan_notificacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_sinan")
+  tb_unidade_monitoramento                   tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
 
   @@index([id_paciente], map: "idx_tbmonitcriexphiv_idpaciente")
 }
-
-
 
 model tb_monitora_gestante_hiv {
   id                                                                                          Int                           @id @default(autoincrement())
@@ -313,12 +296,12 @@ model tb_municipio {
 }
 
 model tb_origem_cadastro {
-  id                                                                                                        Int                              @id @default(autoincrement())
-  co_origem_cadastro                                                                                        String                           @db.VarChar(20)
-  no_origem_cadastro                                                                                        String?                          @db.VarChar(250)
+  id                                Int                              @id @default(autoincrement())
+  co_origem_cadastro                String                           @db.VarChar(20)
+  no_origem_cadastro                String?                          @db.VarChar(250)
   tb_criancaexposta_origem_desfecho tb_monitora_criancaexposta_hiv[] @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro")
   tb_criancaexposta_origem_cadastro tb_monitora_criancaexposta_hiv[] @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro")
-  tb_paciente                                                                                               tb_paciente[]
+  tb_paciente                       tb_paciente[]
 }
 
 model tb_paciente {
@@ -346,6 +329,9 @@ model tb_paciente {
   id_origem_cadastro             Int?
   dt_atualizacao                 DateTime?                        @db.Date
   id_paciente_mae                Int?
+  no_paciente_p                  String[]
+  no_mae_p                       String[]
+  n_cns_paciente                 String[]
   tb_monitora_criancaexposta_hiv tb_monitora_criancaexposta_hiv[]
   tb_monitora_gestante_hiv       tb_monitora_gestante_hiv[]
   tb_escolaridade                tb_escolaridade?                 @relation(fields: [id_escolaridade], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_paciente_escolaridade")
@@ -360,6 +346,9 @@ model tb_paciente {
   @@index([cns_paciente], map: "idx_tb_paciente_cns")
   @@index([no_paciente], map: "idx_tb_paciente_no")
   @@index([no_mae], map: "idx_tb_paciente_no_mae")
+  @@index([n_cns_paciente], map: "idx_tbpaciente_ncnspaciente", type: Gin)
+  @@index([no_mae_p], map: "idx_tbpaciente_nomaep1", type: Gin)
+  @@index([no_paciente_p], map: "idx_tbpaciente_nopacientep1", type: Gin)
 }
 
 model tb_paciente_matrix {
@@ -367,6 +356,7 @@ model tb_paciente_matrix {
   id_paciente          BigInt?
   id_paciente_siga     BigInt?
   no_paciente_matrix   String?               @db.VarChar(250)
+  no_paciente_matrix_p String[]
   dt_nascimento        DateTime?             @db.Date
   cns_paciente_matrix  String?               @db.VarChar(15)
   sg_sexo              String?               @db.Char(1)
@@ -397,6 +387,8 @@ model tb_paciente_siga {
   id_situacao_familiar_siga     Int?
   id_escolaridade_siga          Int?
   dt_atualizacao                DateTime?                       @db.Date
+  no_paciente_siga_p            String[]
+  no_mae_siga_p                 String[]
   tb_consulta_puerperal_siga    tb_consulta_puerperal_siga[]
   tb_escolaridade_siga          tb_escolaridade_siga?           @relation(fields: [id_escolaridade_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientesiga_escolaridadesiga")
   tb_raca_cor_siga              tb_raca_cor_siga?               @relation(fields: [id_raca_cor_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientesiga_racacorsiga")
@@ -416,7 +408,9 @@ model tb_paciente_sinan {
   nu_notific              String?                @db.VarChar(10)
   dt_notific              DateTime?              @db.Date
   no_paciente_sinan       String?                @db.VarChar(250)
+  no_paciente_sinan_p     String[]
   no_mae_sinan            String?                @db.VarChar(250)
+  no_mae_sinan_p          String[]
   dt_nascimento           DateTime?              @db.Date
   cns_paciente_sinan      String?                @db.VarChar(15)
   sg_sexo                 String?                @db.Char(1)
@@ -448,7 +442,9 @@ model tb_paciente_siscel {
   codigo                  String?                 @db.VarChar(20)
   dt_nascimento           DateTime?               @db.Date
   no_paciente_siscel      String?                 @db.VarChar(250)
+  no_paciente_siscel_p    String[]
   no_mae_siscel           String?                 @db.VarChar(250)
+  no_mae_siscel_p         String[]
   cns_paciente_siscel     String?                 @db.VarChar(15)
   sg_sexo                 String?                 @db.Char(1)
   id_siscel_sexo          Int?
@@ -489,30 +485,30 @@ model tb_pre_natal_interrupcao_siga {
 }
 
 model tb_pre_natal_siga {
-  id                                                                                       Int                             @id @default(autoincrement())
-  id_pre_natal                                                                             Int?
-  id_paciente_siga                                                                         Int?
-  id_unidade_acolhimento                                                                   Int?
-  id_unidade_acompanhamento                                                                Int?
-  nu_sisprenatal                                                                           String?                         @db.VarChar(15)
-  dt_ultima_menstruacao                                                                    DateTime?                       @db.Date
-  dt_inicio_acompanhamento                                                                 DateTime?                       @db.Date
-  ig_inicio_acompanhamento                                                                 Int?
-  idade_gestante                                                                           Int?
-  dt_previsao_parto                                                                        DateTime?                       @db.Date
-  dt_acolhimento                                                                           DateTime?                       @db.Date
-  flg_gestante_alto_risco                                                                  Boolean?
-  qt_gestacao                                                                              Int?
-  qt_filho_nascido_vivo                                                                    Int?
-  qt_filho_natimorto                                                                       Int?
-  qt_parto_vaginal                                                                         Int?
-  qt_parto_cesarea                                                                         Int?
-  qt_aborto                                                                                Int?
-  filename                                                                                 String?
-  tb_consulta_puerperal_siga                                                               tb_consulta_puerperal_siga[]
-  tb_monitora_gestante_hiv                                                                 tb_monitora_gestante_hiv[]
-  tb_pre_natal_interrupcao_siga                                                            tb_pre_natal_interrupcao_siga[]
-  tb_paciente_siga                                                                         tb_paciente_siga?               @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacientesiga")
+  id                                   Int                             @id @default(autoincrement())
+  id_pre_natal                         Int?
+  id_paciente_siga                     Int?
+  id_unidade_acolhimento               Int?
+  id_unidade_acompanhamento            Int?
+  nu_sisprenatal                       String?                         @db.VarChar(15)
+  dt_ultima_menstruacao                DateTime?                       @db.Date
+  dt_inicio_acompanhamento             DateTime?                       @db.Date
+  ig_inicio_acompanhamento             Int?
+  idade_gestante                       Int?
+  dt_previsao_parto                    DateTime?                       @db.Date
+  dt_acolhimento                       DateTime?                       @db.Date
+  flg_gestante_alto_risco              Boolean?
+  qt_gestacao                          Int?
+  qt_filho_nascido_vivo                Int?
+  qt_filho_natimorto                   Int?
+  qt_parto_vaginal                     Int?
+  qt_parto_cesarea                     Int?
+  qt_aborto                            Int?
+  filename                             String?
+  tb_consulta_puerperal_siga           tb_consulta_puerperal_siga[]
+  tb_monitora_gestante_hiv             tb_monitora_gestante_hiv[]
+  tb_pre_natal_interrupcao_siga        tb_pre_natal_interrupcao_siga[]
+  tb_paciente_siga                     tb_paciente_siga?               @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacientesiga")
   tb_unidade_saude_siga_acolhimento    tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acolhimentoTotb_unidade_saude_siga", fields: [id_unidade_acolhimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acolhimento")
   tb_unidade_saude_siga_acompanhamento tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acompanhamentoTotb_unidade_saude_siga", fields: [id_unidade_acompanhamento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acompanhamento")
 }
@@ -654,36 +650,36 @@ model tb_sinan_tipo_unidade {
 }
 
 model tb_siscel_carga_viral {
-  id                                                                                            Int                                @id @default(autoincrement())
-  id_paciente_siscel                                                                            Int?
-  codigo                                                                                        String?                            @db.VarChar(20)
-  idade_paciente_coleta                                                                         Int?
-  nu_solicitacao                                                                                String?                            @db.VarChar(20)
-  id_amostra                                                                                    String?                            @db.VarChar(20)
-  gestante                                                                                      String?                            @db.VarChar(20)
-  ds_idade_gestacional                                                                          String?                            @db.VarChar(50)
-  id_motivo_exame_solicitado                                                                    Int?
-  ds_motivo_exame_solicitado                                                                    String?                            @db.VarChar(150)
-  dt_solicitacao                                                                                DateTime?                          @db.Date
-  dt_coleta                                                                                     DateTime?                          @db.Date
-  dt_recebimento                                                                                DateTime?                          @db.Date
-  dt_execucao                                                                                   DateTime?                          @db.Date
-  copias                                                                                        String?                            @db.VarChar
-  nu_log                                                                                        String?                            @db.VarChar
-  volume_ul                                                                                     String?                            @db.VarChar
-  metodo                                                                                        String?                            @db.VarChar
-  kit                                                                                           String?                            @db.VarChar
-  entrada                                                                                       String?                            @db.VarChar
-  observacoes                                                                                   String?                            @db.VarChar
-  id_unidade_solicitante                                                                        Int?
-  id_unidade_executora                                                                          Int?
-  filename                                                                                      String?                            @db.VarChar
-  dt_atualizacao                                                                                DateTime?                          @db.Date
-  qt_copias                                                                                     Int?
-  ds_resultado_carga_viral                                                                      String?                            @db.VarChar(100)
-  id_tipo_resultado_carga_viral                                                                 Int?
-  tb_siscel_motivo_exame_solicitado                                                             tb_siscel_motivo_exame_solicitado? @relation(fields: [id_motivo_exame_solicitado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_motivo")
-  tb_paciente_siscel                                                                            tb_paciente_siscel?                @relation(fields: [id_paciente_siscel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_pacsis")
+  id                                  Int                                @id @default(autoincrement())
+  id_paciente_siscel                  Int?
+  codigo                              String?                            @db.VarChar(20)
+  idade_paciente_coleta               Int?
+  nu_solicitacao                      String?                            @db.VarChar(20)
+  id_amostra                          String?                            @db.VarChar(20)
+  gestante                            String?                            @db.VarChar(20)
+  ds_idade_gestacional                String?                            @db.VarChar(50)
+  id_motivo_exame_solicitado          Int?
+  ds_motivo_exame_solicitado          String?                            @db.VarChar(150)
+  dt_solicitacao                      DateTime?                          @db.Date
+  dt_coleta                           DateTime?                          @db.Date
+  dt_recebimento                      DateTime?                          @db.Date
+  dt_execucao                         DateTime?                          @db.Date
+  copias                              String?                            @db.VarChar
+  nu_log                              String?                            @db.VarChar
+  volume_ul                           String?                            @db.VarChar
+  metodo                              String?                            @db.VarChar
+  kit                                 String?                            @db.VarChar
+  entrada                             String?                            @db.VarChar
+  observacoes                         String?                            @db.VarChar
+  id_unidade_solicitante              Int?
+  id_unidade_executora                Int?
+  filename                            String?                            @db.VarChar
+  dt_atualizacao                      DateTime?                          @db.Date
+  qt_copias                           Int?
+  ds_resultado_carga_viral            String?                            @db.VarChar(100)
+  id_tipo_resultado_carga_viral       Int?
+  tb_siscel_motivo_exame_solicitado   tb_siscel_motivo_exame_solicitado? @relation(fields: [id_motivo_exame_solicitado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_motivo")
+  tb_paciente_siscel                  tb_paciente_siscel?                @relation(fields: [id_paciente_siscel], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_pacsis")
   tb_unidade_saude_siscel_executora   tb_unidade_saude_siscel?           @relation("tb_siscel_carga_viral_id_unidade_executoraTotb_unidade_saude_siscel", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_uniexe")
   tb_unidade_saude_siscel_solicitante tb_unidade_saude_siscel?           @relation("tb_siscel_carga_viral_id_unidade_solicitanteTotb_unidade_saude_siscel", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_siscelcargaviral_unisol")
 
@@ -752,18 +748,18 @@ model tb_situacao_familiar_siga {
 }
 
 model tb_supervisao {
-  id                                    Int                    @id @default(autoincrement())
-  id_coordenadoria                      Int?
-  cnes_supervisao                       String?                @db.VarChar(10)
-  no_supervisao                         String?                @db.VarChar(100)
-  id_unidade_saude                      Int?
-  tb_laboratorio                        tb_laboratorio[]
-  tb_maternidade                        tb_maternidade[]
-  tb_coordenadoria                      tb_coordenadoria?      @relation(fields: [id_coordenadoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_coordenadoria")
-  tb_unidade_saude                      tb_unidade_saude?      @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_unidade")
-  tb_unidade_saude_to_supervisao        tb_unidade_saude[]     @relation("tb_unidade_saude_id_supervisaoTotb_supervisao")
-  tb_unidade_saude_sae_to_supervisao    tb_unidade_saude_sae[]
-  tb_uvis                                                           tb_uvis[]
+  id                                 Int                    @id @default(autoincrement())
+  id_coordenadoria                   Int?
+  cnes_supervisao                    String?                @db.VarChar(10)
+  no_supervisao                      String?                @db.VarChar(100)
+  id_unidade_saude                   Int?
+  tb_laboratorio                     tb_laboratorio[]
+  tb_maternidade                     tb_maternidade[]
+  tb_coordenadoria                   tb_coordenadoria?      @relation(fields: [id_coordenadoria], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_coordenadoria")
+  tb_unidade_saude                   tb_unidade_saude?      @relation("tb_supervisao_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_supervisao_unidade")
+  tb_unidade_saude_to_supervisao     tb_unidade_saude[]     @relation("tb_unidade_saude_id_supervisaoTotb_supervisao")
+  tb_unidade_saude_sae_to_supervisao tb_unidade_saude_sae[]
+  tb_uvis                            tb_uvis[]
 
   @@index([no_supervisao], map: "idx_tb_supervisao_no")
 }
@@ -869,19 +865,21 @@ model tb_trimestre_gestacional_sinan {
 }
 
 model tb_unidade_saude {
-  id                                                                                                        Int                              @id @default(autoincrement())
-  id_coordenadoria                                                                                          Int?
-  id_supervisao                                                                                             Int?
-  id_uvis                                                                                                   Int?
-  cnes_unidade                                                                                              String?                          @db.VarChar(10)
-  no_unidade                                                                                                String?                          @db.VarChar(100)
-  no_logradouro                                                                                             String?                          @db.VarChar(100)
-  nu_endereco                                                                                               String?                          @db.VarChar(10)
-  co_cep                                                                                                    String?                          @db.VarChar(10)
-  co_sigla_estado                                                                                           String?                          @db.VarChar(2)
-  co_municipio_gestor                                                                                       String?                          @db.VarChar(10)
-  co_tipo_estabelecimento                                                                                   String?                          @db.VarChar(3)
-  no_unidade_limpo                                                                                          String?                          @db.VarChar(100)
+  id                                  Int                              @id @default(autoincrement())
+  id_coordenadoria                    Int?
+  id_supervisao                       Int?
+  id_uvis                             Int?
+  cnes_unidade                        String?                          @db.VarChar(10)
+  no_unidade                          String?                          @db.VarChar(100)
+  no_logradouro                       String?                          @db.VarChar(100)
+  nu_endereco                         String?                          @db.VarChar(10)
+  co_cep                              String?                          @db.VarChar(10)
+  co_sigla_estado                     String?                          @db.VarChar(2)
+  co_municipio_gestor                 String?                          @db.VarChar(10)
+  co_tipo_estabelecimento             String?                          @db.VarChar(3)
+  no_unidade_p                        String[]
+  no_unidade_limpo                    String?                          @db.VarChar(100)
+  no_unidade_limpo_p                  String[]
   tb_coordenadoria_to_unidade_saude   tb_coordenadoria[]               @relation("tb_coordenadoria_id_unidade_saudeTotb_unidade_saude")
   tb_laboratorio                      tb_laboratorio[]
   tb_maternidade                      tb_maternidade[]
@@ -904,19 +902,21 @@ model tb_unidade_saude {
   tb_unidade_saude_siscel             tb_unidade_saude_siscel[]
   tb_usuario                          tb_usuario[]
   tb_uvis_to_unidade_saude            tb_uvis[]                        @relation("tb_uvis_id_unidade_saudeTotb_unidade_saude")
-  @@index([cnes_unidade], map: "idx_tb_unidade_saude_cnes")
-  @@index([no_unidade]  , map: "idx_tb_unidade_saude_no")
-}
 
+  @@index([cnes_unidade], map: "idx_tb_unidade_saude_cnes")
+  @@index([no_unidade], map: "idx_tb_unidade_saude_no")
+}
 
 model tb_unidade_saude_matrix {
   id                   Int                   @id @default(autoincrement())
   id_unidade_saude     Int?
   cnes_unidade_matrix  String?               @db.VarChar(10)
   no_unidade_matrix    String?               @db.VarChar(100)
+  no_unidade_matrix_p  String[]
   no_supervisao_matrix String?               @db.VarChar(100)
   no_filtro            String?               @db.VarChar(100)
   no_unidade_limpo     String?               @db.VarChar(100)
+  no_unidade_limpo_p   String[]
   tb_matrix_exame_hiv  tb_matrix_exame_hiv[]
   tb_unidade_saude     tb_unidade_saude?     @relation(fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidadesaudematrix_unidadesaude")
 
@@ -988,7 +988,9 @@ model tb_unidade_saude_siscel {
   uf_unidade_siscel                                                                           String?                 @db.VarChar(100)
   cidade_unidade_siscel                                                                       String?                 @db.VarChar(100)
   no_unidade_siscel                                                                           String?                 @db.VarChar(100)
+  no_unidade_siscel_p                                                                         String[]
   no_unidade_limpo                                                                            String?                 @db.VarChar(100)
+  no_unidade_limpo_p                                                                          String[]
   tb_siscel_carga_viral_tb_siscel_carga_viral_id_unidade_executoraTotb_unidade_saude_siscel   tb_siscel_carga_viral[] @relation("tb_siscel_carga_viral_id_unidade_executoraTotb_unidade_saude_siscel")
   tb_siscel_carga_viral_tb_siscel_carga_viral_id_unidade_solicitanteTotb_unidade_saude_siscel tb_siscel_carga_viral[] @relation("tb_siscel_carga_viral_id_unidade_solicitanteTotb_unidade_saude_siscel")
   tb_unidade_saude                                                                            tb_unidade_saude?       @relation(fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidadesaudesiscel_unidadesaude")
@@ -1022,4 +1024,31 @@ model tb_uvis {
   tb_unidade_saude_tb_uvis_id_unidade_saudeTotb_unidade_saude tb_unidade_saude?  @relation("tb_uvis_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_uvis_unidade")
 
   @@index([no_uvis], map: "idx_tb_uvis_no")
+}
+
+model tb_alerta_criancaexposta_hiv {
+  id                                         Int                                          @id(map: "tb_alerta_crianca_exposta_hiv_pkey") @default(autoincrement())
+  no_alerta_criancaexposta_hiv               String                                       @db.VarChar(100)
+  ds_alerta_reduzido_criancaexposta_hiv      String?                                      @db.VarChar(50)
+  tb_alerta_criancaexposta_hiv_monitoramento tb_alerta_criancaexposta_hiv_monitoramento[]
+}
+
+model tb_alerta_criancaexposta_hiv_monitoramento {
+  id_monitora_criancaexposta_hiv Int
+  id_alerta_criancaexposta_hiv   Int
+  tb_alerta_criancaexposta_hiv   tb_alerta_criancaexposta_hiv   @relation(fields: [id_alerta_criancaexposta_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tb_alerta_criancaexposta_hiv__id_alerta_criancaexposta_hiv_fkey")
+  tb_monitora_criancaexposta_hiv tb_monitora_criancaexposta_hiv @relation(fields: [id_monitora_criancaexposta_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tb_alerta_criancaexposta_hiv__id_monitora_criancaexposta_h_fkey")
+
+  @@id([id_monitora_criancaexposta_hiv, id_alerta_criancaexposta_hiv])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by Prisma Client.
+model tb_classificacao_servico {
+  co_classificacao_servico String  @db.VarChar(3)
+  co_servico_especializado String  @db.VarChar(3)
+  ds_classificacao_servico String? @db.VarChar(100)
+
+  @@id([co_classificacao_servico, co_servico_especializado])
+  @@unique([co_classificacao_servico, co_servico_especializado], map: "td_classificacao_servico_co_classificacao_servico_co_servic_key")
+  @@ignore
 }
