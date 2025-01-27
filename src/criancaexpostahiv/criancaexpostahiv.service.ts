@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
-import { CountCriancaexpostahivAnoDesfecho, CountCriancaexpostahivPorAnoInicio } from './dto/count-criancaexpostahiv.dto';
+import { CountCriancaExpostaHivDesfecho, CountCriancaExpostaHivStatus } from './dto/count-criancaexpostahiv.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -85,6 +85,7 @@ export class CriancaexpostahivService {
               id_coordenadoria: true,
               id_supervisao: true,
               id_uvis: true,
+              is_sae: true,
               tb_coordenadoria: { select: { no_coordenadoria: true } },
               tb_supervisao_to_unidade_saude: { select: { no_supervisao: true } },
               tb_uvis: { select: { no_uvis: true } },
@@ -166,8 +167,8 @@ export class CriancaexpostahivService {
 
 
 // Método para contar crianças expostas por desfecho
-async countCriancaExpostaPorAnoDesfecho(): Promise<CountCriancaexpostahivAnoDesfecho[]> {
-  console.log('countCriancaExpostaPorAnoDesfecho');
+async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]> {
+  console.log('countCriancaExpostaHivDesfecho');
   console.log(this.tenantService.hierarquia_acesso);
   console.log(this.tenantService.cnes_vinculo);
 
@@ -251,7 +252,7 @@ async countCriancaExpostaPorAnoDesfecho(): Promise<CountCriancaexpostahivAnoDesf
     }, {});
 
     // Passo 4: Converter o objeto agrupado em um array
-    const countResult: CountCriancaexpostahivAnoDesfecho[] = Object.values(groupedByYearAndDesfecho);
+    const countResult: CountCriancaExpostaHivDesfecho[] = Object.values(groupedByYearAndDesfecho);
 
     return countResult;
   } catch (error) {
@@ -260,8 +261,8 @@ async countCriancaExpostaPorAnoDesfecho(): Promise<CountCriancaexpostahivAnoDesf
 }
 
 
-  async countCriancaExpostaPorAnoInicio(): Promise<CountCriancaexpostahivPorAnoInicio[]> {
-    console.log('countCriancaExpostaPorAnoInicio');
+  async countCriancaExpostaHivStatus(): Promise<CountCriancaExpostaHivStatus[]> {
+    console.log('countCriancaExpostaHivStatus');
     console.log(this.tenantService.hierarquia_acesso);
     console.log(this.tenantService.cnes_vinculo);
   
@@ -281,7 +282,7 @@ async countCriancaExpostaPorAnoDesfecho(): Promise<CountCriancaexpostahivAnoDesf
     }
   
     try {
-      const result: CountCriancaexpostahivPorAnoInicio[] = 
+      const result: CountCriancaExpostaHivStatus[] = 
         await this.prisma.$queryRaw`
           SELECT 
             DATE_PART('year', tmch.dt_inicio_monitoramento)::TEXT AS ano_inicio_monitoramento,

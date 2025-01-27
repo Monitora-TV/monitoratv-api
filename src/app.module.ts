@@ -11,6 +11,9 @@ import { TenantModule } from './tenant/tenant.module';
 import { AuthMiddleware } from './middleware/auth.middleware';  // Importe o AuthMiddleware
 import { UnidadesaudeModule } from './unidadesaude/unidadesaude.module';
 import { CoordenadoriaModule } from './coordenadoria/coordenadoria.module';
+import { AlertacriancaexpostahivModule } from './alertacriancaexpostahiv/alertacriancaexpostahiv.module';
+import { UnidadesaudesaeModule } from './unidadesaudesae/unidadesaudesae.module';
+import { MaternidadeModule } from './maternidade/maternidade.module';
 
 @Module({
   imports: [
@@ -23,7 +26,10 @@ import { CoordenadoriaModule } from './coordenadoria/coordenadoria.module';
     CriancaexpostahivModule,
     TenantModule,
     UnidadesaudeModule,
-    CoordenadoriaModule
+    CoordenadoriaModule,
+    AlertacriancaexpostahivModule,
+    UnidadesaudesaeModule,
+    MaternidadeModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

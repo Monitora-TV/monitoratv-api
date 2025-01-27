@@ -1,5 +1,5 @@
 // count-criancaexpostahiv.dto.ts
-export class CountCriancaexpostahivAnoDesfecho {
+export class CountCriancaExpostaHivDesfecho {
   ano_desfecho: string;
   id_desfecho_criexp_hiv: number;
   no_desfecho_criancaexposta_hiv: string;
@@ -7,7 +7,7 @@ export class CountCriancaexpostahivAnoDesfecho {
 }
 
 
-export class CountCriancaexpostahivPorAnoInicio {
+export class CountCriancaExpostaHivStatus {
   ano_inicio_monitoramento: string;
   no_desfecho_criancaexposta_hiv: string;
   qt_monitoramento: number;

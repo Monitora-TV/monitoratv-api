@@ -1,9 +1,10 @@
 import { tb_unidade_saude } from '@prisma/client';
 
 export class Unidadesaude implements tb_unidade_saude {
-  no_unidade_p: string[];
-  no_unidade_limpo_p: string[];
+  //no_unidade_p: string[];
+  //no_unidade_limpo_p: string[];
   id: number;
+  is_sae: boolean;
   id_coordenadoria: number;
   id_supervisao: number;
   id_uvis: number;
