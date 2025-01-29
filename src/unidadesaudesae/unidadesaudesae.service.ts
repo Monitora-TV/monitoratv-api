@@ -73,26 +73,7 @@ export class UnidadesaudesaeService {
     }
 
     return await this.prisma.tb_unidade_saude_sae.findMany();
-
-    /*
-    try {
-      const records = await this.prisma.tb_unidade_saude_sae.findMany({
-        where: {
-          tb_unidade_saude: filter_unidade_sae, // Usando o objeto de filtro
-        },
-        include: {
-          tb_coordenadoria: { select: { no_coordenadoria: true } },
-          tb_supervisao: { select: { no_supervisao: true } },
-          tb_uvis: { select: { no_uvis: true } },
-        },
-      });
-
-      return records || []; // Retorna um array vazio caso não haja registros
-    } catch (error) {
-      throw new Error('Erro ao buscar registros: ' + error.message);
-    }
-    */  
-  }
+ }
 
 
 

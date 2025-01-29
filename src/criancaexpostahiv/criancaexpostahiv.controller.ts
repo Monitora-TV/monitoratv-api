@@ -5,8 +5,8 @@ import { UpdateCriancaexpostahivDto } from './dto/update-criancaexpostahiv.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
-import { CountCriancaExpostaHivDesfecho, CountCriancaExpostaHivStatus } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
-import { any } from 'zod';
+import { CountCriancaExpostaHivStatus } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
+//import { any } from 'zod';
 
 @ApiTags('Monitora Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
 @Controller('criancaexpostahiv')
@@ -15,12 +15,32 @@ export class CriancaexpostahivController {
 
   // Endpoint para contar registros de Criança Exposta por Desfecho
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
-  @Get('countcriancaexpostahivdesfecho')
+  @Get('countcriancaexpostahivdesfechogeral')
   @ApiOperation({ summary: 'Contar registros de Criança Exposta por Desfecho' })
   @ApiResponse({ status: 200, description: 'Contagem de registros retornada.' })
   async countCriancaExpostaPorAnoDesfecho() {
+    return await this.criancaexpostahivService.countCriancaExpostaHivDesfechoGeral();
+  }  
+
+
+  // Endpoint para contar registros de Criança Exposta por Desfecho
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('countcriancaexpostahivdesfecho')
+  @ApiOperation({ summary: 'Contar registros de Criança Exposta por Desfecho' })
+  @ApiResponse({ status: 200, description: 'Contagem de registros retornada.' })
+  async countCriancaExpostaPorAnoDesfecho2() {
     return await this.criancaexpostahivService.countCriancaExpostaHivDesfecho();
   }  
+
+
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get('countcriancaexpostahivalerta')
+  @ApiOperation({ summary: 'Contar registros de Criança Exposta por Alerta' })
+  @ApiResponse({ status: 200, description: 'Contagem de registros retornada.' })
+  async countCriancaExpostaHivAlerta() {
+    return await this.criancaexpostahivService.countCriancaExpostaHivAlerta();
+  }  
+
 
   // Rota para contar as crianças expostas agrupadas por desfecho
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard

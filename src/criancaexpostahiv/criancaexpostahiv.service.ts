@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
-import { CountCriancaExpostaHivDesfecho, CountCriancaExpostaHivStatus } from './dto/count-criancaexpostahiv.dto';
+import { CountCriancaExpostaHivDesfechoGeral, CountCriancaExpostaHivStatus, CountCriancaExpostaHivAlerta, CountCriancaExpostaHivDesfecho } from './dto/count-criancaexpostahiv.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -166,8 +166,10 @@ export class CriancaexpostahivService {
 
 
 
+
+
 // Método para contar crianças expostas por desfecho
-async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]> {
+async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfechoGeral[]> {
   console.log('countCriancaExpostaHivDesfecho');
   console.log(this.tenantService.hierarquia_acesso);
   console.log(this.tenantService.cnes_vinculo);
@@ -252,7 +254,7 @@ async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]
     }, {});
 
     // Passo 4: Converter o objeto agrupado em um array
-    const countResult: CountCriancaExpostaHivDesfecho[] = Object.values(groupedByYearAndDesfecho);
+    const countResult: CountCriancaExpostaHivDesfechoGeral[] = Object.values(groupedByYearAndDesfecho);
 
     return countResult;
   } catch (error) {
@@ -284,16 +286,12 @@ async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]
     try {
       const result: CountCriancaExpostaHivStatus[] = 
         await this.prisma.$queryRaw`
-          SELECT 
-            DATE_PART('year', tmch.dt_inicio_monitoramento)::TEXT AS ano_inicio_monitoramento,
-            CASE 
-              WHEN tmch.id_desfecho_criexp_hiv IS NULL OR tmch.id_desfecho_criexp_hiv = -1 
-                THEN 'Sem Desfecho' 
-              ELSE 'Com Desfecho' 
-            END AS no_desfecho_criancaexposta_hiv,  
-            COUNT(tmch.id) AS qt_monitoramento	
-          from	app.tb_monitora_criancaexposta_hiv 	tmch
-          left join 	app.tb_unidade_saude uni on uni.id = tmch.id_unidade_monitoramento
+          SELECT  DATE_PART('year', tmch.dt_inicio_monitoramento)::TEXT AS ano_inicio_monitoramento,
+                  CASE WHEN tmch.id_desfecho_criexp_hiv IS NULL OR tmch.id_desfecho_criexp_hiv = -1 THEN 'Sem Desfecho' ELSE 'Com Desfecho' 
+                  END AS no_desfecho_criancaexposta_hiv,  
+                  COUNT(tmch.id) AS qt_monitoramento	
+          from	  app.tb_monitora_criancaexposta_hiv 	tmch
+          left join	app.tb_unidade_saude uni on uni.id = tmch.id_unidade_monitoramento
           left join app.tb_coordenadoria coo on coo.id = uni.id_coordenadoria 
           left join app.tb_supervisao sts on sts.id = uni.id_supervisao  
           left join app.tb_uvis uvi on uvi.id = uni.id_uvis  
@@ -317,6 +315,118 @@ async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]
       throw new Error('Erro ao contar crianças expostas por desfecho: ' + error.message);
     }
   }
+
+
+
+  async countCriancaExpostaHivAlerta(): Promise<CountCriancaExpostaHivAlerta[]> {
+    console.log('CountCriancaExpostaHivAlerta');
+    console.log(this.tenantService.hierarquia_acesso);
+    console.log(this.tenantService.cnes_vinculo);
+  
+    let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
+  
+    // Construção do filtro com base no tipo de hierarquia_acesso
+    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    try {
+      const result: CountCriancaExpostaHivAlerta[] = 
+        await this.prisma.$queryRaw`
+          select 	ale.ds_alerta_reduzido_criancaexposta_hiv as no_alerta,
+                  count(ale_mce.id_monitora_criancaexposta_hiv) as qt_monitoramento	
+          from	  app.tb_monitora_criancaexposta_hiv 	            tmch
+          join 	  app.tb_alerta_criancaexposta_hiv_monitoramento 	ale_mce on tmch.id = ale_mce.id_monitora_criancaexposta_hiv  
+          join    app.tb_alerta_criancaexposta_hiv                ale     on ale.id = ale_mce.id_alerta_criancaexposta_hiv
+          left join	app.tb_unidade_saude uni on uni.id = tmch.id_unidade_monitoramento
+          left join app.tb_coordenadoria coo on coo.id = uni.id_coordenadoria 
+          left join app.tb_supervisao sts on sts.id = uni.id_supervisao  
+          left join app.tb_uvis uvi on uvi.id = uni.id_uvis  
+          where 	(tmch.id_desfecho_criexp_hiv IS NULL OR tmch.id_desfecho_criexp_hiv = -1)
+          ${Prisma.sql([filter_unidade_monitoramento])} 
+            GROUP BY 1
+            ORDER BY 1;`;
+      // Processar os resultados e converter qualquer BigInt para Number ou String
+      const processedResults = result.map(item => {
+        return {
+          no_alerta: item.no_alerta,
+          qt_monitoramento: Number(item.qt_monitoramento), // Converter BigInt para Number
+        };
+      });
+  
+      return processedResults;
+    } catch (error) {
+      throw new Error('Erro ao contar crianças expostas por alerta: ' + error.message);
+    }
+  }
+
+
+
+
+  async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]> {
+    console.log(this.tenantService.hierarquia_acesso);
+    console.log(this.tenantService.cnes_vinculo);
+  
+    let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
+  
+    // Construção do filtro com base no tipo de hierarquia_acesso
+    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    }
+  
+    try {
+      const result: CountCriancaExpostaHivDesfecho[] = 
+        await this.prisma.$queryRaw`
+
+          SELECT  	DATE_PART('year', tmch.dt_inicio_monitoramento)::TEXT AS ano_inicio_monitoramento,
+                    tdch.no_desfecho_criancaexposta_hiv,	
+                    COUNT(tmch.id) AS qt_monitoramento	
+          from	    app.tb_monitora_criancaexposta_hiv 	tmch
+          join 		  app.tb_desfecho_criancaexposta_hiv 	tdch  on tdch.id = tmch.id_desfecho_criexp_hiv
+          left join	app.tb_unidade_saude uni on uni.id = tmch.id_unidade_monitoramento
+          left join app.tb_coordenadoria coo on coo.id = uni.id_coordenadoria 
+          left join app.tb_supervisao sts on sts.id = uni.id_supervisao  
+          left join app.tb_uvis uvi on uvi.id = uni.id_uvis  
+          WHERE 
+          1=1 
+          ${Prisma.sql([filter_unidade_monitoramento])} 
+            GROUP BY 1, 2
+            ORDER BY 1, 2;`;
+
+      // Processar os resultados e converter qualquer BigInt para Number ou String
+      const processedResults = result.map(item => {
+        return {
+          ano_inicio_monitoramento: item.ano_inicio_monitoramento,
+          no_desfecho_criancaexposta_hiv: item.no_desfecho_criancaexposta_hiv,
+          qt_monitoramento: Number(item.qt_monitoramento), // Converter BigInt para Number
+        };
+      });
+  
+      return processedResults;
+    } catch (error) {
+      throw new Error('Erro ao contar crianças expostas por alerta: ' + error.message);
+    }
+  }
+
+
+
+
   
 }
 
