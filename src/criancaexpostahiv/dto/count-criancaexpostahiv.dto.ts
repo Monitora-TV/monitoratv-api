@@ -7,6 +7,7 @@ export class CountCriancaExpostaHivDesfechoGeral {
 }
 
 export class CountCriancaExpostaHivDesfecho {
+  id_desfecho_criexp_hiv: number;  
   ano_inicio_monitoramento: number;
   no_desfecho_criancaexposta_hiv: string;
   qt_monitoramento: number;

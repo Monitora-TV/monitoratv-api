@@ -341,19 +341,20 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
     try {
       const result: CountCriancaExpostaHivAlerta[] = 
         await this.prisma.$queryRaw`
-          select 	ale.ds_alerta_reduzido_criancaexposta_hiv as no_alerta,
+          select 	ale.id as id_alerta,
+                  ale.ds_alerta_reduzido_criancaexposta_hiv as no_alerta,
                   count(ale_mce.id_monitora_criancaexposta_hiv) as qt_monitoramento	
-          from	  app.tb_monitora_criancaexposta_hiv 	            tmch
-          join 	  app.tb_alerta_criancaexposta_hiv_monitoramento 	ale_mce on tmch.id = ale_mce.id_monitora_criancaexposta_hiv  
-          join    app.tb_alerta_criancaexposta_hiv                ale     on ale.id = ale_mce.id_alerta_criancaexposta_hiv
+          from      app.tb_alerta_criancaexposta_hiv                ale     
+          left join app.tb_alerta_criancaexposta_hiv_monitoramento 	ale_mce on ale.id = ale_mce.id_alerta_criancaexposta_hiv
+          left join app.tb_monitora_criancaexposta_hiv 	            tmch    on tmch.id = ale_mce.id_monitora_criancaexposta_hiv  
           left join	app.tb_unidade_saude uni on uni.id = tmch.id_unidade_monitoramento
           left join app.tb_coordenadoria coo on coo.id = uni.id_coordenadoria 
           left join app.tb_supervisao sts on sts.id = uni.id_supervisao  
           left join app.tb_uvis uvi on uvi.id = uni.id_uvis  
           where 	(tmch.id_desfecho_criexp_hiv IS NULL OR tmch.id_desfecho_criexp_hiv = -1)
           ${Prisma.sql([filter_unidade_monitoramento])} 
-            GROUP BY 1
-            ORDER BY 1;`;
+            GROUP BY 1,2
+            ORDER BY 1,2;`;
       // Processar os resultados e converter qualquer BigInt para Number ou String
       const processedResults = result.map(item => {
         return {
@@ -395,6 +396,7 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
         await this.prisma.$queryRaw`
 
           SELECT  	DATE_PART('year', tmch.dt_inicio_monitoramento)::TEXT AS ano_inicio_monitoramento,
+                    tmch.id_desfecho_criexp_hiv,
                     tdch.no_desfecho_criancaexposta_hiv,	
                     COUNT(tmch.id) AS qt_monitoramento	
           from	    app.tb_monitora_criancaexposta_hiv 	tmch
@@ -406,13 +408,14 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
           WHERE 
           1=1 
           ${Prisma.sql([filter_unidade_monitoramento])} 
-            GROUP BY 1, 2
-            ORDER BY 1, 2;`;
+            GROUP BY 1, 2, 3
+            ORDER BY 1, 2, 3;`;
 
       // Processar os resultados e converter qualquer BigInt para Number ou String
       const processedResults = result.map(item => {
         return {
           ano_inicio_monitoramento: item.ano_inicio_monitoramento,
+          id_desfecho_criexp_hiv: item.id_desfecho_criexp_hiv,
           no_desfecho_criancaexposta_hiv: item.no_desfecho_criancaexposta_hiv,
           qt_monitoramento: Number(item.qt_monitoramento), // Converter BigInt para Number
         };
