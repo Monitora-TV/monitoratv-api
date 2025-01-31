@@ -14,6 +14,7 @@ import { CoordenadoriaModule } from './coordenadoria/coordenadoria.module';
 import { AlertacriancaexpostahivModule } from './alertacriancaexpostahiv/alertacriancaexpostahiv.module';
 import { UnidadesaudesaeModule } from './unidadesaudesae/unidadesaudesae.module';
 import { MaternidadeModule } from './maternidade/maternidade.module';
+import { UsuarioModule } from './usuario/usuario.module';
 
 @Module({
   imports: [
@@ -29,7 +30,8 @@ import { MaternidadeModule } from './maternidade/maternidade.module';
     CoordenadoriaModule,
     AlertacriancaexpostahivModule,
     UnidadesaudesaeModule,
-    MaternidadeModule
+    MaternidadeModule,
+    UsuarioModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
