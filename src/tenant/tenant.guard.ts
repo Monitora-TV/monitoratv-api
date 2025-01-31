@@ -16,10 +16,18 @@ export class TenantGuard implements CanActivate {
 
     const cnes_vinculo = request.user.cnes_vinculo;
     const hierarquia_acesso = request.user.hierarquia_acesso;
+    const preferred_username = request.user.preferred_username;
+    const given_name = request.user.given_name;
+    const email = request.user.email;
 
-    this.tenantService.hierarquia_acesso = hierarquia_acesso;
     this.tenantService.cnes_vinculo = cnes_vinculo;
+    this.tenantService.hierarquia_acesso = hierarquia_acesso;
+    this.tenantService.preferred_username = preferred_username;
+    this.tenantService.given_name = given_name;
+    this.tenantService.email = email;
 
     return true;
   }
 }
+
+
