@@ -33,6 +33,8 @@ export class DesfechocriancaexpostahivController {
   }
 
   // Rota para buscar um registro específico de desfecho por ID
+  // Rota para listar todos os registros de desfecho
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Get(':id')
   @ApiOperation({ summary: 'Buscar um registro de desfecho por ID' })
   @ApiResponse({ status: 200, description: 'Desfecho encontrado.' })

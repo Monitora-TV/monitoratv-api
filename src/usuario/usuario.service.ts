@@ -4,7 +4,6 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 
-
 @Injectable()
 export class UsuarioService {
   @Inject()
@@ -13,40 +12,63 @@ export class UsuarioService {
   @Inject()
   private readonly tenantService: TenantService;
 
-  // Método para criar um novo registro
-  async create(createUsuarioDto: CreateUsuarioDto) {
-    const existingRecord = await this.prisma.tb_usuario.findFirst({
+  // Função para verificar se o usuário existe com base no username
+  async findByUsername(username: string) {
+    return this.prisma.tb_usuario.findFirst({
       where: {
-        email: createUsuarioDto.email, // Verifica se o 'email' já existe
+        username: username, // Busca pelo campo 'username'
       },
     });
+  }
 
-    if (existingRecord) {
-      throw new Error('Já existe um usuario com esse email.');
-    }
-
-    const newRecord = await this.prisma.tb_usuario.create({
-      data: createUsuarioDto,
+/*
+  async findOne(id: number) {
+    return this.prisma.tb_usuario.findUnique({
+      where: { id },
     });
+  }
+*/    
 
-    return newRecord;
+
+  // Método para criar um novo registro
+  async create(createUsuarioDto: CreateUsuarioDto) {
+    // Cria um novo usuário com data de primeiro acesso
+    return this.prisma.tb_usuario.create({
+      data: {
+        ...createUsuarioDto,
+        dt_primeiro_acesso: new Date(), // Define a data de primeiro acesso
+      },
+    });
   }
 
-
-
-  findAll() {
-    return `This action returns all usuario`;
+  // Método para atualizar um registro
+  async update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
+    // Atualiza o registro de usuário com base no ID, sem atualizar o campo 'dt_primeiro_acesso'
+    return this.prisma.tb_usuario.update({
+      where: { id },
+      data: {
+        ...updateUsuarioDto,
+        // Não atualiza o campo 'dt_primeiro_acesso'
+      },
+    });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} usuario`;
+  // Método para obter todos os registros
+  async findAll() {
+    return this.prisma.tb_usuario.findMany();
   }
 
-  update(id: number, updateUsuarioDto: UpdateUsuarioDto) {
-    return `This action updates a #${id} usuario`;
+  // Método para encontrar um registro específico por id
+  async findOne(id: number) {
+    return this.prisma.tb_usuario.findUnique({
+      where: { id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} usuario`;
+  // Método para remover um registro
+  async remove(id: number) {
+    return this.prisma.tb_usuario.delete({
+      where: { id },
+    });
   }
 }

@@ -1001,8 +1001,8 @@ model tb_usuario {
   hierarquia_acesso  String?           @db.VarChar(50)
   cnes_vinculo       String?           @db.VarChar(20)
   id_unidade_vinculo Int?
-  dt_ultimo_acesso   DateTime?         @db.Date
-  dt_cadastro        DateTime?         @db.Date
+  dt_ultimo_acesso   DateTime?         @db.Timestamp(6)
+  dt_primeiro_acesso DateTime?         @db.Timestamp(6)
   tb_unidade_saude   tb_unidade_saude? @relation(fields: [id_unidade_vinculo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_uni")
 }
 

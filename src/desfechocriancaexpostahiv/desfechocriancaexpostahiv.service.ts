@@ -3,6 +3,7 @@ import { CreateDesfechocriancaexpostahivDto } from './dto/create-desfechocrianca
 import { UpdateDesfechocriancaexpostahivDto } from './dto/update-desfechocriancaexpostahiv.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { any } from 'zod';
 
 @Injectable()
 export class DesfechocriancaexpostahivService {
@@ -14,23 +15,30 @@ export class DesfechocriancaexpostahivService {
 
   // Método para criar um novo registro
   async create(createDesfechocriancaexpostahivDto: CreateDesfechocriancaexpostahivDto) {
+
+    // Procurar por um registro existente
     const existingRecord = await this.prisma.tb_desfecho_criancaexposta_hiv.findFirst({
       where: {
         no_filtro: createDesfechocriancaexpostahivDto.no_filtro, // Verifica se o 'no_filtro' já existe
       },
     });
-
+  
+    let record;
+  
+    // Se o registro existir, fazer um update
     if (existingRecord) {
-      throw new Error('Já existe um registro com esse no_filtro.');
+      record = await this.update(+existingRecord.id, existingRecord);
     }
-
-    const newRecord = await this.prisma.tb_desfecho_criancaexposta_hiv.create({
-      data: createDesfechocriancaexpostahivDto,
-    });
-
-    return newRecord;
+    // Se o registro não existir, criar um novo
+    else {
+      record = await this.prisma.tb_desfecho_criancaexposta_hiv.create({
+        data: createDesfechocriancaexpostahivDto,
+      });
+    }
+  
+    return record;
   }
-
+  
   // Método para obter todos os registros
   async findAll() {
     console.log(this.tenantService.hierarquia_acesso);
