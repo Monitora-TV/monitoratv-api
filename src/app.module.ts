@@ -15,6 +15,7 @@ import { AlertacriancaexpostahivModule } from './alertacriancaexpostahiv/alertac
 import { UnidadesaudesaeModule } from './unidadesaudesae/unidadesaudesae.module';
 import { MaternidadeModule } from './maternidade/maternidade.module';
 import { UsuarioModule } from './usuario/usuario.module';
+import { UsuariologModule } from './usuariolog/usuariolog.module';
 
 @Module({
   imports: [
@@ -31,7 +32,8 @@ import { UsuarioModule } from './usuario/usuario.module';
     AlertacriancaexpostahivModule,
     UnidadesaudesaeModule,
     MaternidadeModule,
-    UsuarioModule
+    UsuarioModule,
+    UsuariologModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

@@ -5,6 +5,7 @@ import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
+import { AuthenticatedUser, Public, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
 
 
 @ApiTags('Desfecho Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
@@ -29,7 +30,8 @@ export class UsuarioController {
   @ApiOperation({ summary: 'Criar ou atualizar um usuário' })
   @ApiResponse({ status: 201, description: 'Usuário criado com sucesso.' })
   @ApiResponse({ status: 200, description: 'Usuário atualizado com sucesso.' })
-  async createOrUpdate(@Body() createUsuarioDto: CreateUsuarioDto) {
+  async createOrUpdate(
+    @Body() createUsuarioDto: CreateUsuarioDto) {
     // Verifica se o usuário já existe
     const userExists = await this.usuarioService.findByUsername(createUsuarioDto.username);
 

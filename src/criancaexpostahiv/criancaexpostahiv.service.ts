@@ -2,15 +2,14 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 import { CountCriancaExpostaHivDesfechoGeral, CountCriancaExpostaHivStatus, CountCriancaExpostaHivAlerta, CountCriancaExpostaHivDesfecho } from './dto/count-criancaexpostahiv.dto';
+import { UsuariologService } from 'src/usuariolog/usuariolog.service'; // Importando o serviço de logs
 import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class CriancaexpostahivService {
-  @Inject()
-  private readonly prisma: PrismaService;
+  @Inject() private readonly prisma: PrismaService;
+  @Inject() private readonly tenantService: TenantService;
 
-  @Inject()
-  private readonly tenantService: TenantService;
 
   // Método para criar um novo registro
   async create(createCriancaexpostahivDto: any) {
@@ -144,6 +143,12 @@ export class CriancaexpostahivService {
         where: { id },
         data: updateCriancaexpostahivDto,
       });
+
+      // Registrar o log
+
+      //async logAction(tipo_operacao: string, entity: string, entityid: number, detalhe: string | null = null) {
+      //await this.usuariologService.logAction('Update', 'CriancaExpostaHiv', id, `Atualizado registro de criança exposta HIV com ID: ${id}`);
+      //await this.usuariologService.logAction('Update', 'CriancaExpostaHiv', updatedRecord.id, `Criado registro de criança exposta HIV com ID: ${updatedRecord.id}`);
 
       return updatedRecord;
     } catch (error) {

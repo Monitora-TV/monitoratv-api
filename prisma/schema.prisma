@@ -893,7 +893,6 @@ model tb_unidade_saude {
   tb_unidade_saude_siga                                                                tb_unidade_saude_siga[]
   tb_unidade_saude_sinan                                                               tb_unidade_saude_sinan[]
   tb_unidade_saude_siscel                                                              tb_unidade_saude_siscel[]
-  tb_usuario                                                                           tb_usuario[]
   tb_uvis_to_unidade_saude                                                             tb_uvis[]                        @relation("tb_uvis_id_unidade_saudeTotb_unidade_saude")
 
   @@index([cnes_unidade], map: "idx_tb_unidade_saude_cnes")
@@ -994,16 +993,16 @@ model tb_unidade_saude_siscel {
 }
 
 model tb_usuario {
-  id                 Int               @id @default(autoincrement())
-  nome               String?           @db.VarChar(255)
-  username           String?           @db.VarChar(255)
-  email              String?           @db.VarChar(255)
-  hierarquia_acesso  String?           @db.VarChar(50)
-  cnes_vinculo       String?           @db.VarChar(20)
+  userid_keycloak    String           @id(map: "constraint_fb") @db.VarChar(36)
+  nome               String?          @db.VarChar(255)
+  username           String?          @db.VarChar(255)
+  email              String?          @db.VarChar(255)
+  hierarquia_acesso  String?          @db.VarChar(50)
+  cnes_vinculo       String?          @db.VarChar(20)
   id_unidade_vinculo Int?
-  dt_ultimo_acesso   DateTime?         @db.Timestamp(6)
-  dt_primeiro_acesso DateTime?         @db.Timestamp(6)
-  tb_unidade_saude   tb_unidade_saude? @relation(fields: [id_unidade_vinculo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuario_uni")
+  dt_ultimo_acesso   DateTime?        @db.Timestamp(6)
+  dt_primeiro_acesso DateTime?        @db.Timestamp(6)
+  tb_usuario_log     tb_usuario_log[]
 }
 
 model tb_uvis {
@@ -1121,4 +1120,17 @@ model tb_alerta_gestante_hiv_monitoramento {
   tb_alerta_gestante_hiv   tb_alerta_gestante_hiv   @relation(fields: [id_alerta_gestante_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "tb_alerta_gestante_hiv_monitorament_id_alerta_gestante_hiv_fkey")
 
   @@id([id_monitora_gestante_hiv, id_alerta_gestante_hiv])
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model tb_usuario_log {
+  id              Int        @id @default(autoincrement())
+  userid_keycloak String     @db.VarChar(36)
+  username        String?    @db.VarChar(255)
+  tipo_operacao   String?    @db.VarChar(20)
+  entity          String?    @db.VarChar(200)
+  entityid        Int?
+  detalhe         String?
+  dt_operacao     DateTime?  @db.Timestamp(6)
+  tb_usuario      tb_usuario @relation(fields: [userid_keycloak], references: [userid_keycloak], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuariolog_usuario")
 }

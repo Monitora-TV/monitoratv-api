@@ -3,9 +3,13 @@ import { AppModule } from './app.module';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { createDecodeAccessToken } from "./oidc";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  const { decodeAccessToken } = await createDecodeAccessToken();
+
 
   // Habilitando CORS
   app.enableCors({

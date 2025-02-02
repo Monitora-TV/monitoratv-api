@@ -1,7 +1,7 @@
 import { tb_usuario } from '@prisma/client';
 
 export class Usuario implements tb_usuario {
-  id: number;
+  userid_keycloak: string;
   nome: string;
   username: string;
   email: string;

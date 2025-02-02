@@ -5,6 +5,7 @@ import { UpdateDesfechocriancaexpostahivDto } from './dto/update-desfechocrianca
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
+import { AuthenticatedUser, Public, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
 
 
 @ApiTags('Desfecho Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
@@ -19,7 +20,9 @@ export class DesfechocriancaexpostahivController {
   @Post()
   @ApiOperation({ summary: 'Criar um novo registro de desfecho' })
   @ApiResponse({ status: 201, description: 'Registro de desfecho criado com sucesso.' })
-  create(@Body() createDesfechocriancaexpostahivDto: CreateDesfechocriancaexpostahivDto) {
+  create(
+    @AuthenticatedUser() user: any,
+    @Body() createDesfechocriancaexpostahivDto: CreateDesfechocriancaexpostahivDto ) {
     return this.desfechocriancaexpostahivService.create(createDesfechocriancaexpostahivDto);
   }
 
