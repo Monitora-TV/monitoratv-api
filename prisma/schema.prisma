@@ -993,7 +993,8 @@ model tb_unidade_saude_siscel {
 }
 
 model tb_usuario {
-  userid_keycloak    String           @id(map: "constraint_fb") @db.VarChar(36)
+  id                 Int              @id @default(autoincrement())
+  userid_keycloak    String?          @db.VarChar(36)
   nome               String?          @db.VarChar(255)
   username           String?          @db.VarChar(255)
   email              String?          @db.VarChar(255)
@@ -1124,13 +1125,14 @@ model tb_alerta_gestante_hiv_monitoramento {
 
 /// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
 model tb_usuario_log {
-  id              Int        @id @default(autoincrement())
-  userid_keycloak String     @db.VarChar(36)
-  username        String?    @db.VarChar(255)
-  tipo_operacao   String?    @db.VarChar(20)
-  entity          String?    @db.VarChar(200)
+  id              Int         @id @default(autoincrement())
+  id_usuario      Int?
+  userid_keycloak String?     @db.VarChar(36)
+  username        String?     @db.VarChar(255)
+  tipo_operacao   String?     @db.VarChar(20)
+  entity          String?     @db.VarChar(200)
   entityid        Int?
   detalhe         String?
-  dt_operacao     DateTime?  @db.Timestamp(6)
-  tb_usuario      tb_usuario @relation(fields: [userid_keycloak], references: [userid_keycloak], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuariolog_usuario")
+  dt_operacao     DateTime?   @db.Timestamp(6)
+  tb_usuario      tb_usuario? @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuariolog_usuario")
 }

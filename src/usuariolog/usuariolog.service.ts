@@ -4,14 +4,12 @@ import { CreateUsuariologDto } from './dto/create-usuariolog.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 import { AuthenticatedUser, Public, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
-import { UsuarioService } from 'src/usuario/usuario.service';
 
 
 @Injectable()
 export class UsuariologService {  
   @Inject()  private readonly prisma: PrismaService;
   @Inject()  private readonly tenantService: TenantService;
-  @Inject()  private readonly usuarioService: UsuarioService; // Injetando o serviço de logs
   
   getUserName(
     @AuthenticatedUser()
@@ -26,11 +24,12 @@ export class UsuariologService {
     
 
 
-  async logAction(tipo_operacao: string, entity: string, entityid: number, detalhe: string | null = null) {
+  async logAction(userid_keycloak: string, tipo_operacao: string, entity: string, entityid: number, detalhe: string | null = null) {
     
     await this.prisma.tb_usuario_log.create(
       {
         data: {
+          userid_keycloak,
           tipo_operacao,
           entity,
           entityid,

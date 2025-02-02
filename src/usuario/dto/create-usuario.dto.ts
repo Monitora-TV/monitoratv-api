@@ -1,6 +1,13 @@
 import { IsInt, IsOptional, IsString, Length, IsDateString, IsBoolean } from 'class-validator';
 
 export class CreateUsuarioDto {
+
+  @IsOptional()
+  @IsString()
+  @Length(1, 36)
+  userid_keycloak?: string;  // Pode ser opcional, pois no modelo Prisma é opcional
+
+
   
   @IsOptional()
   @IsString()

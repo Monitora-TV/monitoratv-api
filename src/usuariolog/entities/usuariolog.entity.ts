@@ -2,6 +2,7 @@ import { tb_usuario_log } from '@prisma/client';
 
 export class Usuariolog implements tb_usuario_log {
   id: number;
+  id_usuario: number;
   userid_keycloak: string;
   username: string;
   tipo_operacao: string;

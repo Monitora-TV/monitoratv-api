@@ -37,6 +37,7 @@ export class UsuarioService {
       data: {
         ...createUsuarioDto,
         dt_primeiro_acesso: new Date(), // Define a data de primeiro acesso
+        dt_ultimo_acesso: new Date(), // Define a data de primeiro acesso
       },
     });
   }

@@ -4,7 +4,7 @@ export class CreateUsuariologDto {
     @IsString()
     @Length(1, 255)
     username: string;
-  
+
     @IsOptional()
     @IsString()
     @Length(1, 20)
