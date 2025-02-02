@@ -98,15 +98,15 @@ export class CreateCriancaexpostahivDto {
 
   @IsOptional()
   @IsInt()
-  id_siscel_cv_primeira: number;
+  id_carga_viral_primeira: number;
 
   @IsOptional()
   @IsInt()
-  id_siscel_cv_penultima: number;
+  id_carga_viral_penultima: number;
 
   @IsOptional()
   @IsInt()
-  id_siscel_cv_ultima: number;
+  id_carga_viral_ultima: number;
 
   @IsOptional()
   @IsInt()

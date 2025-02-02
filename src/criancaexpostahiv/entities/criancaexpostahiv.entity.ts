@@ -28,9 +28,6 @@ export class Criancaexpostahiv implements tb_monitora_criancaexposta_hiv {
   id_arv_nascimento_periodo: number;
   id_tarv_esquema: number;
   flg_tarv_28_dias: boolean;
-  id_siscel_cv_primeira: number;
-  id_siscel_cv_penultima: number;
-  id_siscel_cv_ultima: number;
   id_matrix_exahiv_ultima_pos_12: number;
   id_matrix_exahiv_ultima_pos_18: number;
   id_matrix_exahiv_primeiro: number;

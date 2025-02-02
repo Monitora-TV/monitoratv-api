@@ -6,7 +6,9 @@ import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação 
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiQuery, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
 import { CountCriancaExpostaHivStatus } from './dto/count-criancaexpostahiv.dto'; // Adicione o DTO para a contagem
-//import { any } from 'zod';
+//import { AuthenticatedUser, Public, Roles, RoleMatchingMode } from 'nest-keycloak-connect';
+import { AuthenticatedUser } from 'nest-keycloak-connect';
+
 
 @ApiTags('Monitora Criança Exposta ao HIV') // Define o grupo de tags para a documentação OpenAPI
 @Controller('criancaexpostahiv')
@@ -85,10 +87,13 @@ export class CriancaexpostahivController {
   @ApiOperation({ summary: 'Atualizar um registro de Criança Exposta' })
   @ApiResponse({ status: 200, description: 'Registro de Criança Exposta atualizado com sucesso.' })
   update(
+    @AuthenticatedUser() userKeycloak: any,	
     @Param('id') id: string, 
     @Body() updateCriancaexpostahivDto: UpdateCriancaexpostahivDto
   ) {
-    return this.criancaexpostahivService.update(+id, updateCriancaexpostahivDto);
+    // Verifique se o user contém as propriedades esperadas, como `userid_keycloak` e `username`
+    return this.criancaexpostahivService.update(+id, updateCriancaexpostahivDto, userKeycloak);
+    //return this.criancaexpostahivService.update(+id, { updateCriancaexpostahivDto..., user.userid_keycloak, user.username} );
   }
 
   // Rota para remover um registro deCriança Exposta

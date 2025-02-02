@@ -9,7 +9,7 @@ import { Prisma } from '@prisma/client';
 export class CriancaexpostahivService {
   @Inject() private readonly prisma: PrismaService;
   @Inject() private readonly tenantService: TenantService;
-
+  @Inject() private readonly usuariologService: UsuariologService; // Injetando o serviço de logs
 
   // Método para criar um novo registro
   async create(createCriancaexpostahivDto: any) {
@@ -137,19 +137,15 @@ export class CriancaexpostahivService {
   }
 
   // Método para atualizar um registro
-  async update(id: number, updateCriancaexpostahivDto: any) {
+  async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
     try {
       const updatedRecord = await this.prisma.tb_monitora_criancaexposta_hiv.update({
         where: { id },
         data: updateCriancaexpostahivDto,
       });
 
-      // Registrar o log
-
-      //async logAction(tipo_operacao: string, entity: string, entityid: number, detalhe: string | null = null) {
-      //await this.usuariologService.logAction('Update', 'CriancaExpostaHiv', id, `Atualizado registro de criança exposta HIV com ID: ${id}`);
-      //await this.usuariologService.logAction('Update', 'CriancaExpostaHiv', updatedRecord.id, `Criado registro de criança exposta HIV com ID: ${updatedRecord.id}`);
-
+    // Registrar o log
+      await this.usuariologService.logAction(userKeycloak.sub, userKeycloak.preferred_username, 'Update', 'tb_monitora_criancaexposta_hiv', id, `Atualizado registro de criança exposta HIV com ID: ${id}`);
       return updatedRecord;
     } catch (error) {
       throw new Error('Erro ao atualizar registro: ' + error.message);
