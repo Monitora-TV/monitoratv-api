@@ -417,7 +417,6 @@ model tb_paciente_sinan {
   tb_paciente             tb_paciente?           @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientesinan_pacienteapp")
   tb_raca_cor_sinan       tb_raca_cor_sinan?     @relation(fields: [id_raca_cor_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientesinan_racacorsinan")
   tb_sinan_sexo           tb_sinan_sexo?         @relation(fields: [id_sinan_sexo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientesinan_sexo")
-  tb_sinan_notificacao    tb_sinan_notificacao[]
 
   @@index([cns_paciente_sinan], map: "idx_tb_pacientesinan_cns")
   @@index([no_paciente_sinan], map: "idx_tb_pacientesinan_no")
@@ -578,8 +577,6 @@ model tb_sinan_notificacao {
   id                             Int                             @id @default(autoincrement())
   id_unidade_notific             Int?
   id_paciente                    Int?
-  id_unidade_notific_sinan       Int?
-  id_paciente_sinan              Int?
   id_agravo                      String?                         @db.VarChar(10)
   nu_notific                     String?                         @db.VarChar(10)
   dt_notific                     DateTime?                       @db.Date
@@ -603,12 +600,10 @@ model tb_sinan_notificacao {
   tb_sinan_criterio_confirmacao  tb_sinan_criterio_confirmacao?  @relation(fields: [id_sinan_criterio_confirmacao], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_criconfsinan")
   tb_sinan_evolucao_caso         tb_sinan_evolucao_caso?         @relation(fields: [id_sinan_evolucao_caso], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_evocassinan")
   tb_paciente                    tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotif_pac")
-  tb_paciente_sinan              tb_paciente_sinan?              @relation(fields: [id_paciente_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotif_pacsin")
   tb_sinan_suspeita_agravo       tb_sinan_suspeita_agravo?       @relation(fields: [id_sinan_suspeita_agravo], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_susagrsinan")
   tb_sinan_tipo_unidade          tb_sinan_tipo_unidade?          @relation(fields: [id_sinan_tipo_unidade], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_tipunisinan")
   tb_trimestre_gestacional_sinan tb_trimestre_gestacional_sinan? @relation(fields: [id_trimestre_gestacional_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_trigessinan")
   tb_unidade_saude               tb_unidade_saude?               @relation(fields: [id_unidade_notific], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotif_uninot")
-  tb_unidade_saude_sinan         tb_unidade_saude_sinan?         @relation(fields: [id_unidade_notific_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_sinannotificacao_uninotsinan")
 }
 
 model tb_sinan_sexo {
@@ -961,14 +956,13 @@ model tb_unidade_saude_siga {
 }
 
 model tb_unidade_saude_sinan {
-  id                   Int                    @id @default(autoincrement())
-  id_unidade_saude     Int?
-  cnes_unidade_sinan   String?                @db.VarChar(10)
-  no_unidade_sinan     String?                @db.VarChar(100)
-  no_unidade_sinanp    String?                @db.VarChar(100)
-  flg_realiza_parto    Boolean?
-  tb_sinan_notificacao tb_sinan_notificacao[]
-  tb_unidade_saude     tb_unidade_saude?      @relation(fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidadesaudesinan_unidadesaude")
+  id                 Int               @id @default(autoincrement())
+  id_unidade_saude   Int?
+  cnes_unidade_sinan String?           @db.VarChar(10)
+  no_unidade_sinan   String?           @db.VarChar(100)
+  no_unidade_sinanp  String?           @db.VarChar(100)
+  flg_realiza_parto  Boolean?
+  tb_unidade_saude   tb_unidade_saude? @relation(fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidadesaudesinan_unidadesaude")
 
   @@index([cnes_unidade_sinan], map: "idx_tbunidadesaudesinan_cnes")
   @@index([no_unidade_sinan], map: "idx_tbunidadesaudesinan_no")
