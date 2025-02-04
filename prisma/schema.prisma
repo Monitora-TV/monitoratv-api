@@ -167,8 +167,7 @@ model tb_monitora_criancaexposta_hiv {
   dt_desfecho_criexp_hiv                     DateTime?                                    @db.Date
   id_origem_desfecho                         Int?
   dt_diagnostico_hiv                         DateTime?                                    @db.Date
-  id_matrix_exame_hiv_diagnostico            Int?
-  matrix_exame_conclusao_diagnostico         String?                                      @db.VarChar(250)
+  id_exame_hiv_elisaib                       Int?
   id_tipo_resultado_elisa_diagnostico        Int?
   id_tipo_resultado_hivib_diagnostico        Int?
   flg_coleta_cv_nascimento                   Boolean?
@@ -222,7 +221,7 @@ model tb_monitora_gestante_hiv {
   id_origem_desfecho                                                                          Int?
   dt_diagnostico_hiv                                                                          DateTime?                              @db.Date
   ig_diagnostico_hiv                                                                          BigInt?
-  id_matrix_exame_hiv                                                                         Int?
+  id_exame_hiv_elisaib                                                                        Int?
   id_siscel_cv_entrada                                                                        Int?
   dt_inicio_arv                                                                               DateTime?                              @db.Date
   id_tipo_esquema_arv                                                                         Int?
@@ -245,7 +244,6 @@ model tb_monitora_gestante_hiv {
   azt_injetavel_parto                                                                         Boolean?
   dt_atualizacao                                                                              DateTime                               @db.Date
   id_usuario                                                                                  BigInt?
-  matrix_exame_conclusao                                                                      String?                                @db.VarChar(250)
   id_tipo_resultado_elisa                                                                     Int?
   id_tipo_resultado_hivib                                                                     Int?
   tb_alerta_gestante_hiv_monitoramento                                                        tb_alerta_gestante_hiv_monitoramento[]
@@ -474,34 +472,34 @@ model tb_pre_natal_interrupcao_siga {
 }
 
 model tb_pre_natal_siga {
-  id                                   Int                             @id @default(autoincrement())
-  id_pre_natal                         Int?
-  id_paciente_siga                     Int?
-  id_unidade_acolhimento               Int?
-  id_unidade_acompanhamento            Int?
-  nu_sisprenatal                       String?                         @db.VarChar(15)
-  dt_ultima_menstruacao                DateTime?                       @db.Date
-  dt_inicio_acompanhamento             DateTime?                       @db.Date
-  ig_inicio_acompanhamento             Int?
-  idade_gestante                       Int?
-  dt_previsao_parto                    DateTime?                       @db.Date
-  dt_acolhimento                       DateTime?                       @db.Date
-  flg_gestante_alto_risco              Boolean?
-  qt_gestacao                          Int?
-  qt_filho_nascido_vivo                Int?
-  qt_filho_natimorto                   Int?
-  qt_parto_vaginal                     Int?
-  qt_parto_cesarea                     Int?
-  qt_aborto                            Int?
-  filename                             String?
-  id_paciente                          Int?
-  tb_consulta_puerperal_siga           tb_consulta_puerperal_siga[]
-  tb_monitora_gestante_hiv             tb_monitora_gestante_hiv[]
-  tb_pre_natal_interrupcao_siga        tb_pre_natal_interrupcao_siga[]
-  tb_paciente                          tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacienteapp")
-  tb_paciente_siga                     tb_paciente_siga?               @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacientesiga")
-  tb_unidade_saude_siga_acolhimento    tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acolhimentoTotb_unidade_saude_siga", fields: [id_unidade_acolhimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acolhimento")
-  tb_unidade_saude_siga_acompanhamento tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acompanhamentoTotb_unidade_saude_siga", fields: [id_unidade_acompanhamento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acompanhamento")
+  id                                                                                            Int                             @id @default(autoincrement())
+  id_pre_natal                                                                                  Int?
+  id_paciente_siga                                                                              Int?
+  id_unidade_acolhimento_siga                                                                   Int?
+  id_unidade_acompanhamento_siga                                                                Int?
+  nu_sisprenatal                                                                                String?                         @db.VarChar(15)
+  dt_ultima_menstruacao                                                                         DateTime?                       @db.Date
+  dt_inicio_acompanhamento                                                                      DateTime?                       @db.Date
+  ig_inicio_acompanhamento                                                                      Int?
+  idade_gestante                                                                                Int?
+  dt_previsao_parto                                                                             DateTime?                       @db.Date
+  dt_acolhimento                                                                                DateTime?                       @db.Date
+  flg_gestante_alto_risco                                                                       Boolean?
+  qt_gestacao                                                                                   Int?
+  qt_filho_nascido_vivo                                                                         Int?
+  qt_filho_natimorto                                                                            Int?
+  qt_parto_vaginal                                                                              Int?
+  qt_parto_cesarea                                                                              Int?
+  qt_aborto                                                                                     Int?
+  filename                                                                                      String?
+  id_paciente                                                                                   Int?
+  tb_consulta_puerperal_siga                                                                    tb_consulta_puerperal_siga[]
+  tb_monitora_gestante_hiv                                                                      tb_monitora_gestante_hiv[]
+  tb_pre_natal_interrupcao_siga                                                                 tb_pre_natal_interrupcao_siga[]
+  tb_paciente                                                                                   tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacienteapp")
+  tb_paciente_siga                                                                              tb_paciente_siga?               @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacientesiga")
+  tb_unidade_saude_siga_tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga    tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acolhimento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acolhimento")
+  tb_unidade_saude_siga_tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acompanhamento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acompanhamento")
 }
 
 model tb_raca_cor {
@@ -947,8 +945,8 @@ model tb_unidade_saude_siga {
   no_filtro                                                                                                String?                      @db.VarChar(100)
   tb_consulta_puerperal_siga_tb_consulta_puerperal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga tb_consulta_puerperal_siga[] @relation("tb_consulta_puerperal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga")
   tb_consulta_puerperal_siga_tb_consulta_puerperal_siga_id_maternidade_sigaTotb_unidade_saude_siga         tb_consulta_puerperal_siga[] @relation("tb_consulta_puerperal_siga_id_maternidade_sigaTotb_unidade_saude_siga")
-  tb_pre_natal_siga_tb_pre_natal_siga_id_unidade_acolhimentoTotb_unidade_saude_siga                        tb_pre_natal_siga[]          @relation("tb_pre_natal_siga_id_unidade_acolhimentoTotb_unidade_saude_siga")
-  tb_pre_natal_siga_tb_pre_natal_siga_id_unidade_acompanhamentoTotb_unidade_saude_siga                     tb_pre_natal_siga[]          @relation("tb_pre_natal_siga_id_unidade_acompanhamentoTotb_unidade_saude_siga")
+  tb_pre_natal_siga_tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga                   tb_pre_natal_siga[]          @relation("tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga")
+  tb_pre_natal_siga_tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga                tb_pre_natal_siga[]          @relation("tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga")
   tb_unidade_saude                                                                                         tb_unidade_saude?            @relation(fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_unidadesaudesiga_unidadesaude")
 
   @@index([cnes_unidade_siga], map: "idx_tbunidadesaudesiga_cnes")

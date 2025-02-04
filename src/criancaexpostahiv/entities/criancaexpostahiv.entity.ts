@@ -1,6 +1,7 @@
 import { tb_monitora_criancaexposta_hiv } from '@prisma/client';
 
 export class Criancaexpostahiv implements tb_monitora_criancaexposta_hiv {
+  id_exame_hiv_elisaib: number;
   id_carga_viral_primeira: number;
   id_carga_viral_penultima: number;
   id_carga_viral_ultima: number;
