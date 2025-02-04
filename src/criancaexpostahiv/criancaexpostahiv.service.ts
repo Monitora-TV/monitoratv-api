@@ -92,7 +92,11 @@ export class CriancaexpostahivService {
           },
           tb_paciente: {
             select: {
+              cns_paciente: true,
               no_paciente: true,
+              dt_nascimento: true,
+              cns_mae: true,
+              no_mae: true
             },
           },
           tb_desfecho_criancaexposta_hiv: {
