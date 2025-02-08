@@ -16,6 +16,9 @@ import { UnidadesaudesaeModule } from './unidadesaudesae/unidadesaudesae.module'
 import { MaternidadeModule } from './maternidade/maternidade.module';
 import { UsuarioModule } from './usuario/usuario.module';
 import { UsuariologModule } from './usuariolog/usuariolog.module';
+import { TbalertagestantehivModule } from './tbalertagestantehiv/tbalertagestantehiv.module';
+import { TbdesfechogestantehivModule } from './tbdesfechogestantehiv/tbdesfechogestantehiv.module';
+import { TbexamehivelisaibModule } from './tbexamehivelisaib/tbexamehivelisaib.module';
 
 @Module({
   imports: [
@@ -33,7 +36,10 @@ import { UsuariologModule } from './usuariolog/usuariolog.module';
     UnidadesaudesaeModule,
     MaternidadeModule,
     UsuarioModule,
-    UsuariologModule
+    UsuariologModule,
+    TbalertagestantehivModule,
+    TbdesfechogestantehivModule,
+    TbexamehivelisaibModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

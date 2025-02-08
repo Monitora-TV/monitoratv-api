@@ -41,7 +41,7 @@ export class Criancaexpostahiv implements tb_monitora_criancaexposta_hiv {
   tb_desfecho_criancaexposta_hiv: any; // Relacionamento com tb_desfecho_criancaexposta_hiv
   tb_unidade_saude_maternidade: any; // Relacionamento com tb_unidade_saude (maternidade_nascimento)
   tb_origem_desfecho: any; // Relacionamento com tb_origem_cadastro (origem_desfecho)
-  tb_origem_monitoramento: any; // Relacionamento com tb_origem_cadastro (origem_monitoramento)
+  tb_origem_origem: any; // Relacionamento com tb_origem_cadastro (origem_monitoramento)
   tb_paciente: any; // Relacionamento com tb_paciente
   tb_sinan_notificacao: any; // Relacionamento com tb_sinan_notificacao
   tb_unidade_saude_monitoramento: any; // Relacionamento com tb_unidade_saude (unidade_monitoramento)

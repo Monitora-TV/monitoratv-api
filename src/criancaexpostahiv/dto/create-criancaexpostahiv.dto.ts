@@ -1,4 +1,5 @@
 import { IsInt, IsOptional, IsBoolean, IsDateString, IsString, Length } from 'class-validator';
+import { ZodDate } from 'zod';
 
 export class CreateCriancaexpostahivDto {
   
@@ -46,10 +47,6 @@ export class CreateCriancaexpostahivDto {
   @IsOptional()
   @IsInt()
   id_desfecho_criexp_hiv: number;
-
-  @IsOptional()
-  @IsDateString()
-  dt_desfecho_criexp_hiv: Date;
 
   @IsOptional()
   @IsInt()

@@ -2,14 +2,24 @@ import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
 import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 import { CountCriancaExpostaHivDesfechoGeral, CountCriancaExpostaHivStatus, CountCriancaExpostaHivAlerta, CountCriancaExpostaHivDesfecho } from './dto/count-criancaexpostahiv.dto';
+import { UpdateCriancaexpostahivDto } from './dto/update-criancaexpostahiv.dto';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service'; // Importando o serviço de logs
 import { Prisma } from '@prisma/client';
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';  // Importando o plugin UTC
+import { date } from 'zod';
+
+// Extendendo o dayjs com o plugin utc
+//dayjs.extend(utc);
+
 
 @Injectable()
 export class CriancaexpostahivService {
   @Inject() private readonly prisma: PrismaService;
   @Inject() private readonly tenantService: TenantService;
   @Inject() private readonly usuariologService: UsuariologService; // Injetando o serviço de logs
+
+
 
   // Método para criar um novo registro
   async create(createCriancaexpostahivDto: any) {
@@ -71,6 +81,11 @@ export class CriancaexpostahivService {
           tb_unidade_monitoramento: filter_unidade_monitoramento, // Usando o objeto de filtro
         },
         include: {
+          tb_origem_origem: {
+            select:{
+              no_origem_cadastro:true,
+            }  
+          },
           tb_maternidade: {
             select: {
               cnes_unidade:true,
@@ -140,21 +155,48 @@ export class CriancaexpostahivService {
     }
   }
 
+
+
   // Método para atualizar um registro
   async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
+
+
+
+    let dt_desfecho = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
+    dt_desfecho.setMinutes(dt_desfecho.getMinutes() + dt_desfecho.getTimezoneOffset());
+
+    //console.log(dt_desfecho); // Verifica o valor da data
+
     try {
+
+      // Se houver uma data enviada no request, então combinamos com T00:00:00.000Z.
+      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = dt_desfecho;
+
+      // Atualizar o registro no banco de dados
       const updatedRecord = await this.prisma.tb_monitora_criancaexposta_hiv.update({
         where: { id },
-        data: updateCriancaexpostahivDto,
+        data: updateCriancaexpostahivDto
       });
 
-    // Registrar o log
-      await this.usuariologService.logAction(userKeycloak.sub, userKeycloak.preferred_username, 'Update', 'tb_monitora_criancaexposta_hiv', id, `Atualizado registro de criança exposta HIV com ID: ${id}`);
+      // Registrar o log de ação
+      await this.usuariologService.logAction(
+        userKeycloak.sub,
+        userKeycloak.preferred_username,
+        'Update',
+        'tb_monitora_criancaexposta_hiv',
+        id,
+        `Atualizado registro de criança exposta HIV com ID: ${id}`
+      );
+
       return updatedRecord;
     } catch (error) {
       throw new Error('Erro ao atualizar registro: ' + error.message);
     }
   }
+
+
+
+
 
   // Método para remover um registro
   async remove(id: number) {
