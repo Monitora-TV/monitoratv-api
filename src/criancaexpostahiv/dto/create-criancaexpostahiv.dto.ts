@@ -1,5 +1,5 @@
 import { IsInt, IsOptional, IsBoolean, IsDateString, IsString, Length } from 'class-validator';
-import { ZodDate } from 'zod';
+//import { ZodDate } from 'zod';
 
 export class CreateCriancaexpostahivDto {
   

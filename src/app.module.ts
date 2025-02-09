@@ -19,6 +19,7 @@ import { UsuariologModule } from './usuariolog/usuariolog.module';
 import { TbalertagestantehivModule } from './tbalertagestantehiv/tbalertagestantehiv.module';
 import { TbdesfechogestantehivModule } from './tbdesfechogestantehiv/tbdesfechogestantehiv.module';
 import { TbexamehivelisaibModule } from './tbexamehivelisaib/tbexamehivelisaib.module';
+import { TbtiporesultadoelisaModule } from './tbtiporesultadoelisa/tbtiporesultadoelisa.module';
 
 @Module({
   imports: [
@@ -39,7 +40,8 @@ import { TbexamehivelisaibModule } from './tbexamehivelisaib/tbexamehivelisaib.m
     UsuariologModule,
     TbalertagestantehivModule,
     TbdesfechogestantehivModule,
-    TbexamehivelisaibModule
+    TbexamehivelisaibModule,
+    TbtiporesultadoelisaModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

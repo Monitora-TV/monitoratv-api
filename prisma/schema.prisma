@@ -866,6 +866,7 @@ model tb_unidade_saude {
   tb_carga_viral_tb_carga_viral_id_unidade_executoraTotb_unidade_saude                 tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude")
   tb_carga_viral_tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude               tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude")
   tb_coordenadoria_to_unidade_saude                                                    tb_coordenadoria[]               @relation("tb_coordenadoria_id_unidade_saudeTotb_unidade_saude")
+  tb_exame_hiv_elisa_ib_tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude         tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude")
   tb_exame_hiv_elisa_ib_tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude")
   tb_laboratorio                                                                       tb_laboratorio[]
   tb_maternidade                                                                       tb_maternidade[]
@@ -1087,8 +1088,9 @@ model tb_exame_hiv_elisa_ib {
   dt_atualizacao                                                                  DateTime?                @db.Date
   tb_tipo_resultado_elisa                                                         tb_tipo_resultado_elisa? @relation(fields: [id_tipo_resultado_elisa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_elisa")
   tb_tipo_resultado_hivib                                                         tb_tipo_resultado_hivib? @relation(fields: [id_tipo_resultado_hivib], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_hivib")
+  tb_unidade_saude_laboratorio                                                    tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude", fields: [id_laboratorio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_lab")
   tb_paciente                                                                     tb_paciente?             @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_pac")
-  tb_unidade_saude_tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_uni")
+  tb_unidade_saude_solicitante                                                    tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_uni")
 
   @@index([id_paciente], map: "idx_tb_exame_hiv_elisa_ib_pac")
   @@index([id_paciente_matrix], map: "idx_tb_exame_hiv_elisa_ib_pacmat")
@@ -1128,3 +1130,4 @@ model tb_usuario_log {
   dt_operacao     DateTime?   @db.Timestamp(6)
   tb_usuario      tb_usuario? @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuariolog_usuario")
 }
+

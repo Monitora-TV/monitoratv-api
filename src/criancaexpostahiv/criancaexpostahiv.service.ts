@@ -159,19 +159,16 @@ export class CriancaexpostahivService {
 
   // Método para atualizar um registro
   async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
-
-
-
-    let dt_desfecho = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
-    dt_desfecho.setMinutes(dt_desfecho.getMinutes() + dt_desfecho.getTimezoneOffset());
-
-    //console.log(dt_desfecho); // Verifica o valor da data
-
+    
+    //let dt_desfecho = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
+    //dt_desfecho.setMinutes(dt_desfecho.getMinutes() + dt_desfecho.getTimezoneOffset());//console.log(dt_desfecho); // Verifica o valor da data // updateCriancaexpostahivDto.dt_desfecho_criexp_hiv
     try {
-
-      // Se houver uma data enviada no request, então combinamos com T00:00:00.000Z.
-      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = dt_desfecho;
-
+      // Se houver uma data enviada no request, então combinamos com T00:00:00.000Z.      
+      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
+      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.setMinutes(
+        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getMinutes() + updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getTimezoneOffset()
+      );
+    
       // Atualizar o registro no banco de dados
       const updatedRecord = await this.prisma.tb_monitora_criancaexposta_hiv.update({
         where: { id },

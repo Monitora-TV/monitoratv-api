@@ -1,41 +1,55 @@
-import { IsString, IsNotEmpty, Length } from 'class-validator';
+import { IsInt, IsString, IsBoolean, IsDateString, IsOptional, IsNotEmpty, Length } from 'class-validator';
 
 export class CreateTbexamehivelisaibDto {
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_paciente: number;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_unidade_solicitante: number;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_laboratorio: number;
 
-    @Length(6)
+    @IsOptional()
+    @IsDateString()
+    dt_cadastro_resultado: Date;
+
+    @IsOptional()
+    @Length(1)
     @IsString()
-    @IsNotEmpty()
     numero_pedido: string;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_tipo_resultado_elisa: number;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_tipo_resultado_hivib: number;
 
-    @Length(6)
+    @IsOptional()
+    @Length(1)
     @IsString()
-    @IsNotEmpty()
     conclusao: string;
 
-    @Length(6)
+    @IsOptional()
+    @Length(1)
     @IsString()
-    @IsNotEmpty()
     prontuario: string;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_paciente_matrix: number;
 
-    @IsNotEmpty()
+    @IsOptional()
+    @IsInt()
     id_unidade_origem_matrix: number;
 
-}
+    @IsOptional()
+    @IsDateString()
+    dt_atualizacao: Date;
 
+}
