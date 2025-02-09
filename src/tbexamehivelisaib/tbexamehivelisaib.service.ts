@@ -67,6 +67,11 @@ export class TbexamehivelisaibService {
 
         console.log(parsedFilters);
 
+        if (parsedFilters.id_paciente) {
+          where.id_paciente = parsedFilters.id_paciente
+        }
+
+
         // Filtrar dinamicamente com base nos campos do filtro
         if (parsedFilters.tb_paciente) {
           where.tb_paciente = {
@@ -78,6 +83,7 @@ export class TbexamehivelisaibService {
                 mode: 'insensitive', // Torna a busca insensível a maiúsculas/minúsculas
               },
             }),
+            
           };
         }
 
