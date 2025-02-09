@@ -66,13 +66,29 @@ export class TbexamehivelisaibService {
         const parsedFilters = JSON.parse(filters);
 
         console.log(parsedFilters);
-  
+
+        // Filtrar dinamicamente com base nos campos do filtro
+        if (parsedFilters.tb_paciente) {
+          where.tb_paciente = {
+            ...parsedFilters.tb_paciente,
+            // Adiciona o filtro para procurar no_paciente que contenha a string fornecida
+            ...(parsedFilters.tb_paciente.no_paciente && {
+              no_paciente: {
+                contains: parsedFilters.tb_paciente.no_paciente, // Busca parcial
+                mode: 'insensitive', // Torna a busca insensível a maiúsculas/minúsculas
+              },
+            }),
+          };
+        }
+
+        /*  
         // Filtrar dinamicamente com base nos campos do filtro
         if (parsedFilters.tb_paciente) {
           where.tb_paciente = {
             ...parsedFilters.tb_paciente
           };
         }
+          */
   
         if (parsedFilters.tb_tipo_resultado_elisa) {
           where.tb_tipo_resultado_elisa = {
