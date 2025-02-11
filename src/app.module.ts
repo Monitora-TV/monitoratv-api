@@ -20,6 +20,8 @@ import { TbalertagestantehivModule } from './tbalertagestantehiv/tbalertagestant
 import { TbdesfechogestantehivModule } from './tbdesfechogestantehiv/tbdesfechogestantehiv.module';
 import { TbexamehivelisaibModule } from './tbexamehivelisaib/tbexamehivelisaib.module';
 import { TbtiporesultadoelisaModule } from './tbtiporesultadoelisa/tbtiporesultadoelisa.module';
+import { TbtiporesultadocargaviralModule } from './tbtiporesultadocargaviral/tbtiporesultadocargaviral.module';
+import { TbcargaviralModule } from './tbcargaviral/tbcargaviral.module';
 
 @Module({
   imports: [
@@ -41,7 +43,9 @@ import { TbtiporesultadoelisaModule } from './tbtiporesultadoelisa/tbtiporesulta
     TbalertagestantehivModule,
     TbdesfechogestantehivModule,
     TbexamehivelisaibModule,
-    TbtiporesultadoelisaModule
+    TbtiporesultadoelisaModule,
+    TbtiporesultadocargaviralModule,
+    TbcargaviralModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

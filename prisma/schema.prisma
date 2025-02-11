@@ -26,8 +26,8 @@ model tb_consulta_puerperal_siga {
   id_maternidade_siga                                                                                 Int?
   filename                                                                                            String?
   id_paciente                                                                                         Int?
-  tb_unidade_saude_siga_tb_consulta_puerperal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga tb_unidade_saude_siga? @relation("tb_consulta_puerperal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acolhimento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_cnes_acol")
-  tb_unidade_saude_siga_tb_consulta_puerperal_siga_id_maternidade_sigaTotb_unidade_saude_siga         tb_unidade_saude_siga? @relation("tb_consulta_puerperal_siga_id_maternidade_sigaTotb_unidade_saude_siga", fields: [id_maternidade_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_cnes_parto")
+  tb_unidade_saude_siga_acolhimento   tb_unidade_saude_siga? @relation("tb_consulta_puerperal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acolhimento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_cnes_acol")
+  tb_unidade_saude_siga_maternidade   tb_unidade_saude_siga? @relation("tb_consulta_puerperal_siga_id_maternidade_sigaTotb_unidade_saude_siga", fields: [id_maternidade_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_cnes_parto")
   tb_paciente_siga                                                                                    tb_paciente_siga?      @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_pacientesiga")
   tb_tipo_parto_siga                                                                                  tb_tipo_parto_siga?    @relation(fields: [id_tipo_parto_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_parto")
   tb_pre_natal_siga                                                                                   tb_pre_natal_siga?     @relation(fields: [id_pre_natal_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_puerperiosiga_pnsiga")
@@ -39,11 +39,11 @@ model tb_coordenadoria {
   cnes_coordenadoria                                                   String?                @db.VarChar(10)
   no_coordenadoria                                                     String?                @db.VarChar(100)
   id_unidade_saude                                                     Int?
-  tb_unidade_saude_tb_coordenadoria_id_unidade_saudeTotb_unidade_saude tb_unidade_saude?      @relation("tb_coordenadoria_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_coordenadoria_unidade")
+  tb_unidade_saude     tb_unidade_saude?      @relation("tb_coordenadoria_id_unidade_saudeTotb_unidade_saude", fields: [id_unidade_saude], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_coordenadoria_unidade")
   tb_laboratorio                                                       tb_laboratorio[]
   tb_maternidade                                                       tb_maternidade[]
   tb_supervisao                                                        tb_supervisao[]
-  tb_unidade_saude_tb_unidade_saude_id_coordenadoriaTotb_coordenadoria tb_unidade_saude[]     @relation("tb_unidade_saude_id_coordenadoriaTotb_coordenadoria")
+  tb_unidade_saude_To_coordenadoria tb_unidade_saude[]     @relation("tb_unidade_saude_id_coordenadoriaTotb_coordenadoria")
   tb_unidade_saude_sae                                                 tb_unidade_saude_sae[]
   tb_uvis                                                              tb_uvis[]
 
@@ -249,13 +249,13 @@ model tb_monitora_gestante_hiv {
   tb_alerta_gestante_hiv_monitoramento                                                        tb_alerta_gestante_hiv_monitoramento[]
   tb_desfecho_gestante_hiv                                                                    tb_desfecho_gestante_hiv?              @relation(fields: [id_desfecho_gestante_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_desfechogeshiv")
   tb_tipo_interrupcao_prenatal                                                                tb_tipo_interrupcao_prenatal?          @relation(fields: [id_tipo_interrupcao_prenatal], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_interruppn")
-  tb_unidade_saude_tb_monitora_gestante_hiv_id_maternidade_partoTotb_unidade_saude            tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_maternidade_partoTotb_unidade_saude", fields: [id_maternidade_parto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_maternidade")
+  tb_unidade_saude_maternidade_parto                                                          tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_maternidade_partoTotb_unidade_saude", fields: [id_maternidade_parto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_maternidade")
   tb_paciente                                                                                 tb_paciente                            @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_paciente")
   tb_pre_natal_siga                                                                           tb_pre_natal_siga?                     @relation(fields: [id_pre_natal_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_pnsiga")
   tb_tipo_parto                                                                               tb_tipo_parto?                         @relation(fields: [id_tipo_parto], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_tipoparto")
-  tb_unidade_saude_tb_monitora_gestante_hiv_id_unidade_acolhimento_prenatalTotb_unidade_saude tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_acolhimento_prenatalTotb_unidade_saude", fields: [id_unidade_acolhimento_prenatal], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidacolhpn")
-  tb_unidade_saude_tb_monitora_gestante_hiv_id_unidade_consulta_puerperalTotb_unidade_saude   tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_consulta_puerperalTotb_unidade_saude", fields: [id_unidade_consulta_puerperal], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidconspuer")
-  tb_unidade_saude_tb_monitora_gestante_hiv_id_unidade_monitoramentoTotb_unidade_saude        tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidmonit")
+  tb_unidade_saude_acolhimento_prenatal tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_acolhimento_prenatalTotb_unidade_saude", fields: [id_unidade_acolhimento_prenatal], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidacolhpn")
+  tb_unidade_saude_consulta_puerperal   tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_consulta_puerperalTotb_unidade_saude", fields: [id_unidade_consulta_puerperal], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidconspuer")
+  tb_unidade_saude_monitora_gestante    tb_unidade_saude?                      @relation("tb_monitora_gestante_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitgesthiv_unidmonit")
 
   @@index([id_paciente], map: "idx_tbmonitoragestantehiv_idpaciente")
   @@index([id_pre_natal_siga], map: "idx_tbmonitoragestantehiv_idprenatalsiga")
@@ -498,8 +498,8 @@ model tb_pre_natal_siga {
   tb_pre_natal_interrupcao_siga                                                                 tb_pre_natal_interrupcao_siga[]
   tb_paciente                                                                                   tb_paciente?                    @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacienteapp")
   tb_paciente_siga                                                                              tb_paciente_siga?               @relation(fields: [id_paciente_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_pacientesiga")
-  tb_unidade_saude_siga_tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga    tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acolhimento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acolhimento")
-  tb_unidade_saude_siga_tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acompanhamento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acompanhamento")
+  tb_unidade_saude_siga_acolhimento    tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acolhimento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acolhimento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acolhimento")
+  tb_unidade_saude_siga_acompanhamento tb_unidade_saude_siga?          @relation("tb_pre_natal_siga_id_unidade_acompanhamento_sigaTotb_unidade_saude_siga", fields: [id_unidade_acompanhamento_siga], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_prenatalsiga_uni_acompanhamento")
 }
 
 model tb_raca_cor {
@@ -801,10 +801,11 @@ model tb_tipo_parto_siga {
 }
 
 model tb_tipo_resultado_carga_viral {
-  id                            Int      @id @default(autoincrement())
-  no_tipo_resultado_carga_viral String   @db.VarChar(50)
-  no_filtro                     String?  @db.VarChar(50)
+  id                            Int              @id @default(autoincrement())
+  no_tipo_resultado_carga_viral String           @db.VarChar(50)
+  no_filtro                     String?          @db.VarChar(50)
   flg_carga_viral_detectavel    Boolean?
+  tb_carga_viral                tb_carga_viral[]
 }
 
 model tb_tipo_resultado_elisa {
@@ -863,11 +864,11 @@ model tb_unidade_saude {
   co_tipo_estabelecimento                                                              String?                          @db.VarChar(3)
   no_unidade_limpo                                                                     String?                          @db.VarChar(100)
   is_sae                                                                               Boolean?                         @default(false)
-  tb_carga_viral_tb_carga_viral_id_unidade_executoraTotb_unidade_saude                 tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude")
-  tb_carga_viral_tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude               tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude")
+  tb_carga_viral_unidade_executora                   tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude")
+  tb_carga_viral_unidade_solicitante               tb_carga_viral[]                 @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude")
   tb_coordenadoria_to_unidade_saude                                                    tb_coordenadoria[]               @relation("tb_coordenadoria_id_unidade_saudeTotb_unidade_saude")
-  tb_exame_hiv_elisa_ib_tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude         tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude")
-  tb_exame_hiv_elisa_ib_tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude")
+  tb_exame_hiv_elisa_laboratorio         tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude")
+  tb_exame_hiv_elisa_unidade_solicitante tb_exame_hiv_elisa_ib[]          @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude")
   tb_laboratorio                                                                       tb_laboratorio[]
   tb_maternidade                                                                       tb_maternidade[]
   tb_criancaexposta_hiv_maternidade                                                    tb_monitora_criancaexposta_hiv[] @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude")
@@ -1066,31 +1067,32 @@ model tb_carga_viral {
   tb_siscel_motivo_exame_solicitado                                        tb_siscel_motivo_exame_solicitado? @relation(fields: [id_motivo_exame_solicitado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_motivo")
   tb_paciente                                                              tb_paciente?                       @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_pac")
   tb_siscel_carga_viral                                                    tb_siscel_carga_viral?             @relation(fields: [id_siscel_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_siscel")
-  tb_unidade_saude_tb_carga_viral_id_unidade_executoraTotb_unidade_saude   tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_uniexe")
-  tb_unidade_saude_tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_unisol")
+  tb_tipo_resultado_carga_viral                                            tb_tipo_resultado_carga_viral?     @relation(fields: [id_tipo_resultado_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_tipres")
+  tb_unidade_executora   tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_uniexe")
+  tb_unidade_solicitante tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_unisol")
 
   @@index([id_paciente], map: "idx_tbcargaviral_pac")
 }
 
 model tb_exame_hiv_elisa_ib {
-  id                                                                              Int                      @id @default(autoincrement())
-  id_paciente                                                                     Int?
-  id_unidade_solicitante                                                          Int?
-  id_laboratorio                                                                  Int?
-  dt_cadastro_resultado                                                           DateTime?                @db.Date
-  numero_pedido                                                                   String?                  @db.VarChar(20)
-  id_tipo_resultado_elisa                                                         Int?
-  id_tipo_resultado_hivib                                                         Int?
-  conclusao                                                                       String?                  @db.VarChar(100)
-  prontuario                                                                      String?                  @db.VarChar(50)
-  id_paciente_matrix                                                              Int?
-  id_unidade_origem_matrix                                                        Int?
-  dt_atualizacao                                                                  DateTime?                @db.Date
-  tb_tipo_resultado_elisa                                                         tb_tipo_resultado_elisa? @relation(fields: [id_tipo_resultado_elisa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_elisa")
-  tb_tipo_resultado_hivib                                                         tb_tipo_resultado_hivib? @relation(fields: [id_tipo_resultado_hivib], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_hivib")
-  tb_unidade_saude_laboratorio                                                    tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude", fields: [id_laboratorio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_lab")
-  tb_paciente                                                                     tb_paciente?             @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_pac")
-  tb_unidade_saude_solicitante                                                    tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_uni")
+  id                           Int                      @id @default(autoincrement())
+  id_paciente                  Int?
+  id_unidade_solicitante       Int?
+  id_laboratorio               Int?
+  dt_cadastro_resultado        DateTime?                @db.Date
+  numero_pedido                String?                  @db.VarChar(20)
+  id_tipo_resultado_elisa      Int?
+  id_tipo_resultado_hivib      Int?
+  conclusao                    String?                  @db.VarChar(100)
+  prontuario                   String?                  @db.VarChar(50)
+  id_paciente_matrix           Int?
+  id_unidade_origem_matrix     Int?
+  dt_atualizacao               DateTime?                @db.Date
+  tb_tipo_resultado_elisa      tb_tipo_resultado_elisa? @relation(fields: [id_tipo_resultado_elisa], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_elisa")
+  tb_tipo_resultado_hivib      tb_tipo_resultado_hivib? @relation(fields: [id_tipo_resultado_hivib], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_hivib")
+  tb_unidade_saude_laboratorio tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_laboratorioTotb_unidade_saude", fields: [id_laboratorio], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_lab")
+  tb_paciente                  tb_paciente?             @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_pac")
+  tb_unidade_saude_solicitante tb_unidade_saude?        @relation("tb_exame_hiv_elisa_ib_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_exame_hiv_elisa_ib_uni")
 
   @@index([id_paciente], map: "idx_tb_exame_hiv_elisa_ib_pac")
   @@index([id_paciente_matrix], map: "idx_tb_exame_hiv_elisa_ib_pacmat")
@@ -1130,4 +1132,3 @@ model tb_usuario_log {
   dt_operacao     DateTime?   @db.Timestamp(6)
   tb_usuario      tb_usuario? @relation(fields: [id_usuario], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuariolog_usuario")
 }
-
