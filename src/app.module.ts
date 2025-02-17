@@ -22,6 +22,7 @@ import { TbexamehivelisaibModule } from './tbexamehivelisaib/tbexamehivelisaib.m
 import { TbtiporesultadoelisaModule } from './tbtiporesultadoelisa/tbtiporesultadoelisa.module';
 import { TbtiporesultadocargaviralModule } from './tbtiporesultadocargaviral/tbtiporesultadocargaviral.module';
 import { TbcargaviralModule } from './tbcargaviral/tbcargaviral.module';
+import { TbpacienteModule } from './tbpaciente/tbpaciente.module';
 
 @Module({
   imports: [
@@ -45,7 +46,8 @@ import { TbcargaviralModule } from './tbcargaviral/tbcargaviral.module';
     TbexamehivelisaibModule,
     TbtiporesultadoelisaModule,
     TbtiporesultadocargaviralModule,
-    TbcargaviralModule
+    TbcargaviralModule,
+    TbpacienteModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],

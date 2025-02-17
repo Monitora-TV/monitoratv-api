@@ -1,0 +1,13 @@
+POST http://10.10.64.117:8080/smsservices/services/PessoaService.PessoaServiceHttpSoap12Endpoint/ HTTP/1.1
+Content-Type: application/soap+xml; charset=utf-8
+SOAPAction: "PesquisarPessoa"  # Pode ser necessário, depende do serviço
+
+<?xml version="1.0" encoding="UTF-8"?>
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:web="http://webservice.example.com">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <web:PesquisarPessoa>
+         <web:numeroCns>801440474368845</web:numeroCns>
+      </web:PesquisarPessoa>
+   </soapenv:Body>
+</soapenv:Envelope>

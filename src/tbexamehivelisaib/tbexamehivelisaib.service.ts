@@ -175,6 +175,46 @@ export class TbexamehivelisaibService {
   findOne(id: number) {
     return this.prisma.tb_exame_hiv_elisa_ib.findUnique({
       where: { id },
+      include: {
+        tb_paciente: {
+          select: {
+            cns_paciente: true,
+            cns_mae: true,
+            dt_nascimento: true,
+            flg_crianca: true,
+            flg_gestante: true,
+            no_paciente: true,
+          }
+        },
+        tb_tipo_resultado_elisa: {
+          select: {
+            ds_resultado_elisa: true,
+            no_filtro: true
+          }
+        },
+        tb_tipo_resultado_hivib: {
+          select: {
+            ds_resultado_hivib: true,
+            no_filtro: true
+          }
+        },
+        tb_unidade_saude_solicitante: {
+          select: {
+            cnes_unidade: true,
+            no_unidade: true,
+            id_coordenadoria: true,
+            id_supervisao: true,
+            id_uvis: true,
+          }
+        },
+        tb_unidade_saude_laboratorio: {
+          select: {
+            cnes_unidade: true,
+            no_unidade: true,
+            id_coordenadoria: true,
+          }
+        }
+      }
     });
   }
 
@@ -208,7 +248,33 @@ export class TbexamehivelisaibService {
 
   }
 
-  remove(id: number, userKeycloak: any) {
+  async remove(id: number, userKeycloak: any) {
+
+    const deletedRecord = await this.findOne( id );
+
+    deletedRecord.dt_cadastro_resultado = new Date(deletedRecord.dt_cadastro_resultado||'');
+    deletedRecord.dt_cadastro_resultado.setMinutes(
+      deletedRecord.dt_cadastro_resultado.getMinutes() + deletedRecord.dt_cadastro_resultado.getTimezoneOffset()
+    );
+
+
+    await this.usuariologService.logAction(
+      userKeycloak.sub,
+      userKeycloak.preferred_username,
+      'Delete',
+      'tb_exame_hiv_elisa_ib',
+      id,
+      'Registro tb_exame_hiv_elisa_ib deletado do paciente (CNS: ' + 
+      (deletedRecord.tb_paciente.cns_paciente || '') + '\n' + // Adicionando quebra de linha
+      'Nome: ' + 
+      (deletedRecord.tb_paciente.no_paciente || '') + 
+      ')' + '\n' + // Adicionando quebra de linha
+      'Data Resultado: ' + (deletedRecord.dt_cadastro_resultado || '') + '\n' + // Adicionando quebra de linha
+      'Resultado Elisa: ' + (deletedRecord.tb_tipo_resultado_elisa.ds_resultado_elisa || '') 
+    );
+
+
+
     return this.prisma.tb_exame_hiv_elisa_ib.delete({
       where: { id },
     });
