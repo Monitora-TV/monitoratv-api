@@ -23,6 +23,7 @@ import { TbtiporesultadoelisaModule } from './tbtiporesultadoelisa/tbtiporesulta
 import { TbtiporesultadocargaviralModule } from './tbtiporesultadocargaviral/tbtiporesultadocargaviral.module';
 import { TbcargaviralModule } from './tbcargaviral/tbcargaviral.module';
 import { TbpacienteModule } from './tbpaciente/tbpaciente.module';
+import { TbunidadesaudeModule } from './tbunidadesaude/tbunidadesaude.module';
 
 @Module({
   imports: [
@@ -47,7 +48,8 @@ import { TbpacienteModule } from './tbpaciente/tbpaciente.module';
     TbtiporesultadoelisaModule,
     TbtiporesultadocargaviralModule,
     TbcargaviralModule,
-    TbpacienteModule
+    TbpacienteModule,
+    TbunidadesaudeModule
   ],
   controllers: [AppController],
   providers: [AppService, PrismaService],
