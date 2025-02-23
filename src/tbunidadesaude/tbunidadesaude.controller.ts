@@ -36,6 +36,8 @@ export class TbunidadesaudeController {
     return await this.tbunidadesaudeService.findAll(page, limit, filters);
   }
 
+
+
   @Get(':id')
   @ApiOperation({ summary: 'Buscar um registro Tbunidadesaude por ID' })
   @ApiResponse({ status: 200, description: 'Tbunidadesaude encontrado.' })

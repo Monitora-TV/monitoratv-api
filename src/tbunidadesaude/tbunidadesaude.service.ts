@@ -62,6 +62,15 @@ export class TbunidadesaudeService {
           where.is_sae = parsedFilters.is_sae
         }
 
+        if (parsedFilters.is_maternidade) {
+          where.is_maternidade = parsedFilters.is_maternidade
+        }
+
+        if (parsedFilters.is_laboratorio) {
+          where.is_laboratorio = parsedFilters.is_laboratorio
+        }
+
+
         if (parsedFilters.cnes_unidade) {
           where.cnes_unidade = parsedFilters.cnes_unidade
         }
@@ -123,6 +132,7 @@ export class TbunidadesaudeService {
     // Retorna os dados paginados e o total de registros
     return { total, records, page, lastPage: Math.ceil(total / limit) };
   }
+
 
 
   findOne(id: number) {

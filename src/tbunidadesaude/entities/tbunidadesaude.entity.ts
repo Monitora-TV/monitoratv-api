@@ -1,6 +1,8 @@
 import { tb_unidade_saude } from '@prisma/client';
 
 export class Tbunidadesaude implements tb_unidade_saude {
+    is_laboratorio: boolean;
+    is_maternidade: boolean;
     id: number;
     id_coordenadoria: number;
     id_supervisao: number;
