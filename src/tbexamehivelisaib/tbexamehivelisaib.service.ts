@@ -11,14 +11,37 @@ export class TbexamehivelisaibService {
   @Inject()  private readonly tenantService: TenantService;
   @Inject()  private readonly usuariologService: UsuariologService;
 
+  async update(id: number, updateTbexamehivelisaibDto: UpdateTbexamehivelisaibDto, userKeycloak: any) {
+
+      updateTbexamehivelisaibDto.dt_cadastro_resultado = new Date(updateTbexamehivelisaibDto.dt_cadastro_resultado||'');
+      updateTbexamehivelisaibDto.dt_cadastro_resultado.setMinutes(
+        updateTbexamehivelisaibDto.dt_cadastro_resultado.getMinutes() + updateTbexamehivelisaibDto.dt_cadastro_resultado.getTimezoneOffset()
+      );
+
+    const updatedRecord = await this.prisma.tb_exame_hiv_elisa_ib.update({
+      where: { id },
+      data: updateTbexamehivelisaibDto,
+    });
+
+    await this.usuariologService.logAction(
+      userKeycloak.sub,
+      userKeycloak.preferred_username,
+      'Update',
+      'tb_exame_hiv_elisa_ib',
+      updatedRecord.id,
+      'Atualizado registro tb_exame_hiv_elisa_ib com ID:' + updatedRecord.id||''
+    );
+
+    return updatedRecord;
+
+  }
+
+
+
   async create(createTbexamehivelisaibDto: CreateTbexamehivelisaibDto, userKeycloak: any) {
       createTbexamehivelisaibDto.dt_cadastro_resultado = new Date(createTbexamehivelisaibDto.dt_cadastro_resultado||'');
       createTbexamehivelisaibDto.dt_cadastro_resultado.setMinutes(
         createTbexamehivelisaibDto.dt_cadastro_resultado.getMinutes() + createTbexamehivelisaibDto.dt_cadastro_resultado.getTimezoneOffset()
-      );
-      createTbexamehivelisaibDto.dt_atualizacao = new Date(createTbexamehivelisaibDto.dt_atualizacao||'');
-      createTbexamehivelisaibDto.dt_atualizacao.setMinutes(
-        createTbexamehivelisaibDto.dt_atualizacao.getMinutes() + createTbexamehivelisaibDto.dt_atualizacao.getTimezoneOffset()
       );
 
       const existingRecord = await this.prisma.tb_exame_hiv_elisa_ib.findFirst({
@@ -26,12 +49,14 @@ export class TbexamehivelisaibService {
           AND: [
             { id_paciente: createTbexamehivelisaibDto.id_paciente },
             { dt_cadastro_resultado: createTbexamehivelisaibDto.dt_cadastro_resultado },
+            { id_unidade_solicitante: createTbexamehivelisaibDto.id_unidade_solicitante },
+            { id_laboratorio: createTbexamehivelisaibDto.id_laboratorio },
           ],
         },
       });
       
       if (existingRecord) {
-        throw new Error('Já existe um registro com esse no_filtro.');
+        throw new Error('Já existe um registro nesta data para este paciente.');
       }
 
       const newRecord = await this.prisma.tb_exame_hiv_elisa_ib.create({
@@ -216,36 +241,6 @@ export class TbexamehivelisaibService {
         }
       }
     });
-  }
-
-  async update(id: number, updateTbexamehivelisaibDto: UpdateTbexamehivelisaibDto, userKeycloak: any) {
-
-      updateTbexamehivelisaibDto.dt_cadastro_resultado = new Date(updateTbexamehivelisaibDto.dt_cadastro_resultado||'');
-      updateTbexamehivelisaibDto.dt_cadastro_resultado.setMinutes(
-        updateTbexamehivelisaibDto.dt_cadastro_resultado.getMinutes() + updateTbexamehivelisaibDto.dt_cadastro_resultado.getTimezoneOffset()
-      );
-      updateTbexamehivelisaibDto.dt_atualizacao = new Date(updateTbexamehivelisaibDto.dt_atualizacao||'');
-      updateTbexamehivelisaibDto.dt_atualizacao.setMinutes(
-        updateTbexamehivelisaibDto.dt_atualizacao.getMinutes() + updateTbexamehivelisaibDto.dt_atualizacao.getTimezoneOffset()
-      );
-
-
-    const updatedRecord = await this.prisma.tb_exame_hiv_elisa_ib.update({
-      where: { id },
-      data: updateTbexamehivelisaibDto,
-    });
-
-    await this.usuariologService.logAction(
-      userKeycloak.sub,
-      userKeycloak.preferred_username,
-      'Update',
-      'tb_exame_hiv_elisa_ib',
-      updatedRecord.id,
-      'Atualizado registro tb_exame_hiv_elisa_ib com ID:' + updatedRecord.id||''
-    );
-
-    return updatedRecord;
-
   }
 
   async remove(id: number, userKeycloak: any) {

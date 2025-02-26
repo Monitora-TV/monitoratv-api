@@ -92,6 +92,12 @@ export class CriancaexpostahivService {
               no_unidade: true,
             },
           },
+          tb_unidade_notific_sinan: {
+            select: {
+              cnes_unidade:true,
+              no_unidade: true,
+            },
+          },
           tb_unidade_monitoramento: {
             select: {
               cnes_unidade: true,

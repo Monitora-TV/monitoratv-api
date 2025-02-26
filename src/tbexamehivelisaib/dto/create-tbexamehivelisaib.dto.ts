@@ -40,16 +40,4 @@ export class CreateTbexamehivelisaibDto {
     @IsString()
     prontuario: string;
 
-    @IsOptional()
-    @IsInt()
-    id_paciente_matrix: number;
-
-    @IsOptional()
-    @IsInt()
-    id_unidade_origem_matrix: number;
-
-    @IsOptional()
-    @IsDateString()
-    dt_atualizacao: Date;
-
 }
