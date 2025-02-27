@@ -81,7 +81,17 @@ export class CriancaexpostahivService {
           tb_unidade_monitoramento: filter_unidade_monitoramento, // Usando o objeto de filtro
         },
         include: {
-          tb_origem_origem: {
+          tb_periodo_arv_nascimento: {
+            select:{
+              no_periodo_arv_nascimento:true,
+            }  
+          },
+          tb_origem_monitoramento: {
+            select:{
+              no_origem_cadastro:true,
+            }  
+          },
+          tb_origem_desfecho: {
             select:{
               no_origem_cadastro:true,
             }  
@@ -96,6 +106,88 @@ export class CriancaexpostahivService {
             select: {
               cnes_unidade:true,
               no_unidade: true,
+            },
+          },
+          tb_exame_hiv_elisa_ib_apos_12: {
+            select: {
+              dt_cadastro_resultado:true,
+              tb_tipo_resultado_elisa: 
+              {
+                select: {ds_resultado_elisa:true}
+              },
+              tb_tipo_resultado_hivib: 
+              {
+                select: {ds_resultado_hivib:true}
+              }
+            },
+          },
+          tb_exame_hiv_elisa_ib_apos_18: {
+            select: {
+              dt_cadastro_resultado:true,
+              tb_tipo_resultado_elisa: 
+              {
+                select: {ds_resultado_elisa:true}
+              },
+              tb_tipo_resultado_hivib: 
+              {
+                select: {ds_resultado_hivib:true}
+              }
+            },
+          },
+          tb_exame_hiv_elisa_ib_first: {
+            select: {
+              dt_cadastro_resultado:true,
+              tb_tipo_resultado_elisa: 
+              {
+                select: {ds_resultado_elisa:true}
+              },
+              tb_tipo_resultado_hivib: 
+              {
+                select: {ds_resultado_hivib:true}
+              }
+            },
+          },
+          tb_exame_hiv_elisa_ib_diagnostico: {
+            select: {
+              dt_cadastro_resultado:true,
+              tb_tipo_resultado_elisa: 
+              {
+                select: {ds_resultado_elisa:true}
+              },
+              tb_tipo_resultado_hivib: 
+              {
+                select: {ds_resultado_hivib:true}
+              }
+            },
+          },
+          tb_carga_viral_primeira: {
+            select: {
+              dt_recebimento: true,
+              copias: true,
+              tb_tipo_resultado_carga_viral: 
+              {
+                select: {no_tipo_resultado_carga_viral: true}
+              },
+            },
+          },
+          tb_carga_viral_penultima: {
+            select: {
+              dt_recebimento: true,
+              copias: true,
+              tb_tipo_resultado_carga_viral: 
+              {
+                select: {no_tipo_resultado_carga_viral: true}
+              },
+            },
+          },
+          tb_carga_viral_ultima: {
+            select: {
+              dt_recebimento: true,
+              copias: true,
+              tb_tipo_resultado_carga_viral: 
+              {
+                select: {no_tipo_resultado_carga_viral: true}
+              },
             },
           },
           tb_unidade_monitoramento: {
@@ -162,14 +254,46 @@ export class CriancaexpostahivService {
   }
 
 
+  async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
+    try {
+      // Verifique se a data é nula e defina corretamente.
+      if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv === null) {
+        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = null;
+      } else if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv) {
+        // Caso contrário, se houver um valor, converta para uma data válida.
+        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv);
+        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.setMinutes(
+          updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getMinutes() +
+          updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getTimezoneOffset()
+        );
+      }
+  
+      // Atualizar o registro no banco de dados
+      const updatedRecord = await this.prisma.tb_monitora_criancaexposta_hiv.update({
+        where: { id },
+        data: updateCriancaexpostahivDto
+      });
+  
+      // Registrar o log de ação
+      await this.usuariologService.logAction(
+        userKeycloak.sub,
+        userKeycloak.preferred_username,
+        'Update',
+        'tb_monitora_criancaexposta_hiv',
+        id,
+        `Atualizado registro de criança exposta HIV com ID: ${id}`
+      );
+  
+      return updatedRecord;
+    } catch (error) {
+      throw new Error('Erro ao atualizar registro: ' + error.message);
+    }
+  }
 
+  /*
   // Método para atualizar um registro
   async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
-    
-    //let dt_desfecho = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
-    //dt_desfecho.setMinutes(dt_desfecho.getMinutes() + dt_desfecho.getTimezoneOffset());//console.log(dt_desfecho); // Verifica o valor da data // updateCriancaexpostahivDto.dt_desfecho_criexp_hiv
     try {
-      // Se houver uma data enviada no request, então combinamos com T00:00:00.000Z.      
       updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
       updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.setMinutes(
         updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getMinutes() + updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getTimezoneOffset()
@@ -196,7 +320,7 @@ export class CriancaexpostahivService {
       throw new Error('Erro ao atualizar registro: ' + error.message);
     }
   }
-
+  */
 
 
 

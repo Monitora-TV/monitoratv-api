@@ -96,6 +96,9 @@ export class TbexamehivelisaibService {
           where.id_paciente = parsedFilters.id_paciente
         }
 
+        if (parsedFilters.id_tipo_resultado_elisa) {
+          where.id_tipo_resultado_elisa = parsedFilters.id_tipo_resultado_elisa
+        }
 
         // Filtrar dinamicamente com base nos campos do filtro
         if (parsedFilters.tb_paciente) {
