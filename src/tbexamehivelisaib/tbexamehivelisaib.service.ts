@@ -100,7 +100,27 @@ export class TbexamehivelisaibService {
           where.id_tipo_resultado_elisa = parsedFilters.id_tipo_resultado_elisa
         }
 
+        if (parsedFilters.id_tipo_resultado_hivib) {
+          where.id_tipo_resultado_hivib = parsedFilters.id_tipo_resultado_hivib
+        }
+
+        if (parsedFilters.id_unidade_solicitante) {
+          where.id_unidade_solicitante = parsedFilters.id_unidade_solicitante
+        }
+
+        if (parsedFilters.id_laboratorio) {
+          where.id_laboratorio = parsedFilters.id_laboratorio
+        }
+
+
+        if (parsedFilters.tb_paciente) {
+          where.tb_paciente = {
+            ...parsedFilters.tb_paciente,
+          };
+        }
+
         // Filtrar dinamicamente com base nos campos do filtro
+        /*
         if (parsedFilters.tb_paciente) {
           where.tb_paciente = {
             ...parsedFilters.tb_paciente,
@@ -114,27 +134,9 @@ export class TbexamehivelisaibService {
             
           };
         }
+        */
 
-        /*  
-        // Filtrar dinamicamente com base nos campos do filtro
-        if (parsedFilters.tb_paciente) {
-          where.tb_paciente = {
-            ...parsedFilters.tb_paciente
-          };
-        }
-          */
-  
-        if (parsedFilters.tb_tipo_resultado_elisa) {
-          where.tb_tipo_resultado_elisa = {
-            ...parsedFilters.tb_tipo_resultado_elisa
-          };
-        }
-  
-        if (parsedFilters.tb_unidade_saude_solicitante) {
-          where.tb_unidade_saude_solicitante = {
-            ...parsedFilters.tb_unidade_saude_solicitante
-          };
-        }
+
   
       } catch (error) {
         throw new Error('Invalid filter format');
