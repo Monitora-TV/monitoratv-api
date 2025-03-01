@@ -146,55 +146,55 @@ model tb_maternidade {
 }
 
 model tb_monitora_criancaexposta_hiv {
-  id                                                                                     Int                                          @id @default(autoincrement())
-  id_paciente                                                                            Int?
-  id_monitora_gestante_hiv                                                               Int?
-  id_sinan_notificacao                                                                   Int?
-  nu_notific_sinan                                                                       String?                                      @db.VarChar(10)
-  dt_notific_sinan                                                                       DateTime?                                    @db.Date
-  id_unidade_notific_sinan                                                               Int?
-  id_maternidade_nascimento                                                              Int?
-  dt_saida_maternidade                                                                   DateTime?                                    @db.Date
-  dt_inicio_monitoramento                                                                DateTime?                                    @db.Date
-  id_unidade_monitoramento                                                               Int?
-  id_desfecho_criexp_hiv                                                                 Int?
-  dt_desfecho_criexp_hiv                                                                 DateTime?                                    @db.Date
-  id_origem_desfecho                                                                     Int?
-  flg_coleta_cv_nascimento                                                               Boolean?
-  flg_arv_nascimento                                                                     Boolean?
-  id_periodo_arv_nascimento                                                              Int?
-  flg_tarv_28_dias                                                                       Boolean?
-  id_carga_viral_primeira                                                                Int?
-  id_carga_viral_penultima                                                               Int?
-  id_carga_viral_ultima                                                                  Int?
-  dt_inicio_profilaxia                                                                   DateTime?                                    @db.Date
-  id_origem_monitoramento                                                                Int?
-  id_usuario                                                                             Int?
-  dt_atualizacao                                                                         DateTime                                     @db.Date
-  id_examehivelisaib_diagnostico                                                         Int?
-  id_examehivelisaib_last_apos_12                                                        Int?
-  id_examehivelisaib_last_apos_18                                                        Int?
-  id_examehivelisaib_first                                                               Int?
-  flg_tarv_azt                                                                           Boolean?
-  flg_tarv_3tc                                                                           Boolean?
-  flg_tarv_nevirapina                                                                    Boolean?
-  flg_tarv_raltegravir                                                                   Boolean?
-  tb_alerta_criancaexposta_hiv_monitoramento                                             tb_alerta_criancaexposta_hiv_monitoramento[]
-  tb_carga_viral_penultima      tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral", fields: [id_carga_viral_penultima], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralpenultima")
-  tb_carga_viral_primeira       tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral", fields: [id_carga_viral_primeira], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralprimeira")
-  tb_carga_viral_ultima         tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral", fields: [id_carga_viral_ultima], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralultima")
-  tb_desfecho_criancaexposta_hiv                                                         tb_desfecho_criancaexposta_hiv?              @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
-  tb_exame_hiv_elisa_ib_apos_12                                                          tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_last_apos_12Totb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_last_apos_12], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_12")
-  tb_exame_hiv_elisa_ib_apos_18                                                          tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_last_apos_18Totb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_last_apos_18], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_18")
-  tb_exame_hiv_elisa_ib_diagnostico                                                      tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_diagnosticoTotb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_diagnostico], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_diagnostico")
-  tb_exame_hiv_elisa_ib_first                                                            tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_firstTotb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_first], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_first")
-  tb_unidade_notific_sinan                                                               tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_unidade_notific_sinanTotb_unidade_saude", fields: [id_unidade_notific_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_id_unidade_sinan")
-  tb_maternidade                                                                         tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
-  tb_origem_desfecho                                                                     tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
-  tb_origem_monitoramento                                                                tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
-  tb_paciente                                                                            tb_paciente?                                 @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
-  tb_periodo_arv_nascimento                                                              tb_periodo_arv_nascimento?                   @relation(fields: [id_periodo_arv_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_periodoarvnascimento")
-  tb_unidade_monitoramento                                                               tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
+  id                                         Int                                          @id @default(autoincrement())
+  id_paciente                                Int?
+  id_monitora_gestante_hiv                   Int?
+  id_sinan_notificacao                       Int?
+  nu_notific_sinan                           String?                                      @db.VarChar(10)
+  dt_notific_sinan                           DateTime?                                    @db.Date
+  id_unidade_notific_sinan                   Int?
+  id_maternidade_nascimento                  Int?
+  dt_saida_maternidade                       DateTime?                                    @db.Date
+  dt_inicio_monitoramento                    DateTime?                                    @db.Date
+  id_unidade_monitoramento                   Int?
+  id_desfecho_criexp_hiv                     Int?
+  dt_desfecho_criexp_hiv                     DateTime?                                    @db.Date
+  id_origem_desfecho                         Int?
+  flg_coleta_cv_nascimento                   Boolean?
+  flg_arv_nascimento                         Boolean?
+  id_periodo_arv_nascimento                  Int?
+  flg_tarv_28_dias                           Boolean?
+  id_carga_viral_primeira                    Int?
+  id_carga_viral_penultima                   Int?
+  id_carga_viral_ultima                      Int?
+  dt_inicio_profilaxia                       DateTime?                                    @db.Date
+  id_origem_monitoramento                    Int?
+  id_usuario                                 Int?
+  dt_atualizacao                             DateTime                                     @db.Date
+  id_examehivelisaib_diagnostico             Int?
+  id_examehivelisaib_last_apos_12            Int?
+  id_examehivelisaib_last_apos_18            Int?
+  id_examehivelisaib_first                   Int?
+  flg_tarv_azt                               Boolean?
+  flg_tarv_3tc                               Boolean?
+  flg_tarv_nevirapina                        Boolean?
+  flg_tarv_raltegravir                       Boolean?
+  tb_alerta_criancaexposta_hiv_monitoramento tb_alerta_criancaexposta_hiv_monitoramento[]
+  tb_carga_viral_penultima                   tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral", fields: [id_carga_viral_penultima], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralpenultima")
+  tb_carga_viral_primeira                    tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral", fields: [id_carga_viral_primeira], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralprimeira")
+  tb_carga_viral_ultima                      tb_carga_viral?                              @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral", fields: [id_carga_viral_ultima], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_cargaviralultima")
+  tb_desfecho_criancaexposta_hiv             tb_desfecho_criancaexposta_hiv?              @relation(fields: [id_desfecho_criexp_hiv], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_desfecho")
+  tb_exame_hiv_elisa_ib_apos_12              tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_last_apos_12Totb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_last_apos_12], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_12")
+  tb_exame_hiv_elisa_ib_apos_18              tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_last_apos_18Totb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_last_apos_18], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_18")
+  tb_exame_hiv_elisa_ib_diagnostico          tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_diagnosticoTotb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_diagnostico], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_diagnostico")
+  tb_exame_hiv_elisa_ib_first                tb_exame_hiv_elisa_ib?                       @relation("tb_monitora_criancaexposta_hiv_id_examehivelisaib_firstTotb_exame_hiv_elisa_ib", fields: [id_examehivelisaib_first], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_examehivelisaib_first")
+  tb_unidade_notific_sinan                   tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_unidade_notific_sinanTotb_unidade_saude", fields: [id_unidade_notific_sinan], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_id_unidade_sinan")
+  tb_maternidade                             tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_maternidade_nascimentoTotb_unidade_saude", fields: [id_maternidade_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_maternidade")
+  tb_origem_desfecho                         tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_desfechoTotb_origem_cadastro", fields: [id_origem_desfecho], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemdesfecho")
+  tb_origem_monitoramento                    tb_origem_cadastro?                          @relation("tb_monitora_criancaexposta_hiv_id_origem_monitoramentoTotb_origem_cadastro", fields: [id_origem_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_origemmonit")
+  tb_paciente                                tb_paciente?                                 @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_paciente")
+  tb_periodo_arv_nascimento                  tb_periodo_arv_nascimento?                   @relation(fields: [id_periodo_arv_nascimento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_periodoarvnascimento")
+  tb_unidade_monitoramento                   tb_unidade_saude?                            @relation("tb_monitora_criancaexposta_hiv_id_unidade_monitoramentoTotb_unidade_saude", fields: [id_unidade_monitoramento], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_monitcriexphiv_unidmonit")
 
   @@index([id_paciente], map: "idx_tbmonitcriexphiv_idpaciente")
 }
@@ -1050,32 +1050,30 @@ model tb_classificacao_servico {
 }
 
 model tb_carga_viral {
-  id                                                                                                     Int                                @id @default(autoincrement())
-  id_siscel_carga_viral                                                                                  Int?
-  id_paciente                                                                                            Int?
-  id_unidade_solicitante                                                                                 Int?
-  id_unidade_executora                                                                                   Int?
-  codigo                                                                                                 String?                            @db.VarChar(20)
-  idade_paciente_coleta                                                                                  Int?
-  nu_solicitacao                                                                                         String?                            @db.VarChar(20)
-  id_amostra                                                                                             String?                            @db.VarChar(20)
-  gestante                                                                                               String?                            @db.VarChar(20)
-  ds_idade_gestacional                                                                                   String?                            @db.VarChar(50)
-  id_motivo_exame_solicitado                                                                             Int?
-  dt_solicitacao                                                                                         DateTime?                          @db.Date
-  dt_recebimento                                                                                         DateTime?                          @db.Date
-  copias                                                                                                 String?                            @db.VarChar
-  observacoes                                                                                            String?                            @db.VarChar
-  dt_atualizacao                                                                                         DateTime?                          @db.Date
-  qt_copias                                                                                              Int?
-  ds_resultado_carga_viral                                                                               String?                            @db.VarChar(100)
-  id_tipo_resultado_carga_viral                                                                          Int?
-  tb_siscel_motivo_exame_solicitado                                                                      tb_siscel_motivo_exame_solicitado? @relation(fields: [id_motivo_exame_solicitado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_motivo")
-  tb_paciente                                                                                            tb_paciente?                       @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_pac")
-  tb_siscel_carga_viral                                                                                  tb_siscel_carga_viral?             @relation(fields: [id_siscel_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_siscel")
-  tb_tipo_resultado_carga_viral                                                                          tb_tipo_resultado_carga_viral?     @relation(fields: [id_tipo_resultado_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_tipres")
-  tb_unidade_executora                                                                                   tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_uniexe")
-  tb_unidade_solicitante                                                                                 tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_unisol")
+  id                                                               Int                                @id @default(autoincrement())
+  id_siscel_carga_viral                                            Int?
+  id_paciente                                                      Int?
+  id_unidade_solicitante                                           Int?
+  id_unidade_executora                                             Int?
+  codigo                                                           String?                            @db.VarChar(20)
+  nu_solicitacao                                                   String?                            @db.VarChar(20)
+  id_amostra                                                       String?                            @db.VarChar(20)
+  gestante                                                         String?                            @db.VarChar(20)
+  ds_idade_gestacional                                             String?                            @db.VarChar(50)
+  id_motivo_exame_solicitado                                       Int?
+  dt_solicitacao                                                   DateTime?                          @db.Date
+  dt_recebimento                                                   DateTime?                          @db.Date
+  copias                                                           String?                            @db.VarChar
+  observacoes                                                      String?                            @db.VarChar
+  dt_atualizacao                                                   DateTime?                          @db.Date
+  qt_copias                                                        Int?
+  id_tipo_resultado_carga_viral                                    Int?
+  tb_siscel_motivo_exame_solicitado                                tb_siscel_motivo_exame_solicitado? @relation(fields: [id_motivo_exame_solicitado], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_motivo")
+  tb_paciente                                                      tb_paciente?                       @relation(fields: [id_paciente], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_pac")
+  tb_siscel_carga_viral                                            tb_siscel_carga_viral?             @relation(fields: [id_siscel_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_siscel")
+  tb_tipo_resultado_carga_viral                                    tb_tipo_resultado_carga_viral?     @relation(fields: [id_tipo_resultado_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_tipres")
+  tb_unidade_executora                                             tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_uniexe")
+  tb_unidade_solicitante                                           tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_unisol")
   tb_monitora_criancaexposta_carga_viral_penultimaTotb_carga_viral tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral")
   tb_monitora_criancaexposta_carga_viral_primeiraTotb_carga_viral  tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral")
   tb_monitora_criancaexposta_carga_viral_ultimaTotb_carga_viral    tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral")

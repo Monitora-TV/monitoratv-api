@@ -17,19 +17,29 @@ export class TbcargaviralService {
   private readonly usuariologService: UsuariologService;
 
   async create(createTbcargaviralDto: CreateTbcargaviralDto, userKeycloak: any) {
+
+    if (createTbcargaviralDto.dt_solicitacao)
+    {
       createTbcargaviralDto.dt_solicitacao = new Date(createTbcargaviralDto.dt_solicitacao||'');
       createTbcargaviralDto.dt_solicitacao.setMinutes(
         createTbcargaviralDto.dt_solicitacao.getMinutes() + createTbcargaviralDto.dt_solicitacao.getTimezoneOffset()
       );
-      createTbcargaviralDto.dt_recebimento = new Date(createTbcargaviralDto.dt_recebimento||'');
-      createTbcargaviralDto.dt_recebimento.setMinutes(
-        createTbcargaviralDto.dt_recebimento.getMinutes() + createTbcargaviralDto.dt_recebimento.getTimezoneOffset()
-      );
+    }
+
+      if (createTbcargaviralDto.dt_recebimento)
+      {
+        createTbcargaviralDto.dt_recebimento = new Date(createTbcargaviralDto.dt_recebimento||'');
+        createTbcargaviralDto.dt_recebimento.setMinutes(
+          createTbcargaviralDto.dt_recebimento.getMinutes() + createTbcargaviralDto.dt_recebimento.getTimezoneOffset()
+        );
+      }
 
       const existingRecord = await this.prisma.tb_carga_viral.findFirst({
         where: {
           codigo: createTbcargaviralDto.codigo,
           id_paciente: createTbcargaviralDto.id_paciente,
+          id_tipo_resultado_carga_viral: createTbcargaviralDto.id_tipo_resultado_carga_viral,
+          dt_recebimento: createTbcargaviralDto.dt_recebimento,
         },
       });
       if (existingRecord) {
@@ -90,11 +100,9 @@ export class TbcargaviralService {
           };
         }
 
-        if (parsedFilters.tb_tipo_resultado_carga_viral) {
-          where.tb_tipo_resultado_carga_viral = {
-            ...parsedFilters.tb_tipo_resultado_carga_viral
-          };
-        }
+        if (parsedFilters.id_tipo_resultado_carga_viral) {
+          where.id_tipo_resultado_carga_viral = parsedFilters.id_tipo_resultado_carga_viral
+        };
         
         if (parsedFilters.tb_unidade_solicitante) {
           where.tb_unidade_solicitante = {
