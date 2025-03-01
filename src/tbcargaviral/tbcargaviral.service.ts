@@ -25,10 +25,6 @@ export class TbcargaviralService {
       createTbcargaviralDto.dt_recebimento.setMinutes(
         createTbcargaviralDto.dt_recebimento.getMinutes() + createTbcargaviralDto.dt_recebimento.getTimezoneOffset()
       );
-      createTbcargaviralDto.dt_atualizacao = new Date(createTbcargaviralDto.dt_atualizacao||'');
-      createTbcargaviralDto.dt_atualizacao.setMinutes(
-        createTbcargaviralDto.dt_atualizacao.getMinutes() + createTbcargaviralDto.dt_atualizacao.getTimezoneOffset()
-      );
 
       const existingRecord = await this.prisma.tb_carga_viral.findFirst({
         where: {
@@ -178,15 +174,10 @@ export class TbcargaviralService {
       updateTbcargaviralDto.dt_recebimento.setMinutes(
         updateTbcargaviralDto.dt_recebimento.getMinutes() + updateTbcargaviralDto.dt_recebimento.getTimezoneOffset()
       );
-      updateTbcargaviralDto.dt_atualizacao = new Date(updateTbcargaviralDto.dt_atualizacao||'');
-      updateTbcargaviralDto.dt_atualizacao.setMinutes(
-        updateTbcargaviralDto.dt_atualizacao.getMinutes() + updateTbcargaviralDto.dt_atualizacao.getTimezoneOffset()
-      );
-
 
     const updatedRecord = await this.prisma.tb_carga_viral.update({
       where: { id },
-      data: updateTbcargaviralDto,
+      data: updateTbcargaviralDto
     });
 
     await this.usuariologService.logAction(

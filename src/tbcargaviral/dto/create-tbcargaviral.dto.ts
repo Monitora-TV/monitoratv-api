@@ -3,10 +3,6 @@ import { IsInt, IsString, IsBoolean, IsDateString, IsOptional, IsNotEmpty, Lengt
 export class CreateTbcargaviralDto {
     @IsOptional()
     @IsInt()
-    id_siscel_carga_viral: number;
-
-    @IsOptional()
-    @IsInt()
     id_paciente: number;
 
     @IsOptional()
@@ -21,10 +17,6 @@ export class CreateTbcargaviralDto {
     @Length(1)
     @IsString()
     codigo: string;
-
-    @IsOptional()
-    @IsInt()
-    idade_paciente_coleta: number;
 
     @IsOptional()
     @Length(1)
@@ -69,17 +61,8 @@ export class CreateTbcargaviralDto {
     observacoes: string;
 
     @IsOptional()
-    @IsDateString()
-    dt_atualizacao: Date;
-
-    @IsOptional()
     @IsInt()
     qt_copias: number;
-
-    @IsOptional()
-    @Length(1)
-    @IsString()
-    ds_resultado_carga_viral: string;
 
     @IsOptional()
     @IsInt()

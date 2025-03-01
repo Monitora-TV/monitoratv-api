@@ -1076,9 +1076,9 @@ model tb_carga_viral {
   tb_tipo_resultado_carga_viral                                                                          tb_tipo_resultado_carga_viral?     @relation(fields: [id_tipo_resultado_carga_viral], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_tipres")
   tb_unidade_executora                                                                                   tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_executoraTotb_unidade_saude", fields: [id_unidade_executora], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_uniexe")
   tb_unidade_solicitante                                                                                 tb_unidade_saude?                  @relation("tb_carga_viral_id_unidade_solicitanteTotb_unidade_saude", fields: [id_unidade_solicitante], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_cargaviral_unisol")
-  tb_monitora_criancaexposta_hiv_tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral")
-  tb_monitora_criancaexposta_hiv_tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral  tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral")
-  tb_monitora_criancaexposta_hiv_tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral    tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral")
+  tb_monitora_criancaexposta_carga_viral_penultimaTotb_carga_viral tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_penultimaTotb_carga_viral")
+  tb_monitora_criancaexposta_carga_viral_primeiraTotb_carga_viral  tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_primeiraTotb_carga_viral")
+  tb_monitora_criancaexposta_carga_viral_ultimaTotb_carga_viral    tb_monitora_criancaexposta_hiv[]   @relation("tb_monitora_criancaexposta_hiv_id_carga_viral_ultimaTotb_carga_viral")
 
   @@index([id_paciente], map: "idx_tbcargaviral_pac")
 }
