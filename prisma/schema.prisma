@@ -322,11 +322,11 @@ model tb_paciente {
   tb_monitora_criancaexposta_hiv tb_monitora_criancaexposta_hiv[]
   tb_monitora_gestante_hiv       tb_monitora_gestante_hiv[]
   tb_escolaridade                tb_escolaridade?                 @relation(fields: [id_escolaridade], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_paciente_escolaridade")
+  tb_paciente_mae                tb_paciente?                     @relation("tb_pacienteTotb_paciente", fields: [id_paciente_mae], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientemae_pacienteapp")
+  other_tb_paciente              tb_paciente[]                    @relation("tb_pacienteTotb_paciente")
   tb_origem_cadastro             tb_origem_cadastro?              @relation(fields: [id_origem_cadastro], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_paciente_origem")
   tb_raca_cor                    tb_raca_cor?                     @relation(fields: [id_raca_cor], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_paciente_racacor")
   tb_situacao_familiar           tb_situacao_familiar?            @relation(fields: [id_situacao_familiar], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_paciente_situacao_familiar")
-  tb_paciente                    tb_paciente?                     @relation("tb_pacienteTotb_paciente", fields: [id_paciente_mae], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk_pacientemae_pacienteapp")
-  other_tb_paciente              tb_paciente[]                    @relation("tb_pacienteTotb_paciente")
   tb_paciente_sinan              tb_paciente_sinan[]
   tb_paciente_siscel             tb_paciente_siscel[]
   tb_pre_natal_interrupcao_siga  tb_pre_natal_interrupcao_siga[]

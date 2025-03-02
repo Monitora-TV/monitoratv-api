@@ -113,6 +113,15 @@ export class TbpacienteService {
       take: Number(limit), // 'take' deve ser um número válido (limit)
       where, // Aplica o filtro dinamicamente
       include: {
+        tb_paciente_mae: {
+          select: {
+            cns_paciente: true,
+            dt_nascimento: true,
+            flg_crianca: true,
+            flg_gestante: true,
+            no_paciente: true,
+          }
+        },
         tb_escolaridade: {
           select: {
             no_escolaridade: true,

@@ -40,201 +40,248 @@ export class CriancaexpostahivService {
     return newRecord;
   }
 
-  // Método para obter todos os registros
-  async findAll() {
-    console.log('findall crianca exposta');
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
-    //const hierarquia_acesso = this.tenantService.hierarquia_acesso;
-    //const cnes_vinculo = this.tenantService.cnes_vinculo;
+  async findAll(page: number, limit: number, filters?: string) {
+    // Garantir que o skip é um número válido
+    const skip = (page > 0 ? page - 1 : 0) * (limit > 0 ? limit : 10); // Se 'page' ou 'limit' não forem válidos, use valores padrão    //const skip = (page - 1) * limit;
 
-    let filter_unidade_monitoramento = {}; // Defina a variável como um objeto vazio inicialmente
+    // Defina um objeto onde todos os filtros serão aplicados dinamicamente
+    const where: any = {};
+  
+    if (filters) {
+      try {
+        // Caso o filtro seja passado como string, tenta-se fazer o parse para um objeto
+        const parsedFilters = JSON.parse(filters);
 
-    // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-      filter_unidade_monitoramento = {
-        tb_coordenadoria: {
-          cnes_coordenadoria: this.tenantService.cnes_vinculo,
-        },
-      };
-    }
+        console.log(parsedFilters);
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-      filter_unidade_monitoramento = {
-        tb_supervisao: {
-          cnes_supervisao: this.tenantService.cnes_vinculo,
-        },
-      };
-    }
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-      filter_unidade_monitoramento = {
-        tb_uvis: {
-          cnes_uvis: this.tenantService.cnes_vinculo,
-        },
-      };
-    }
+        // Construção do filtro com base no tipo de hierarquia_acesso
+        if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+          where.tb_coordenadoria = {
+              cnes_coordenadoria: this.tenantService.cnes_vinculo,
+            };
+        }
 
-    try {
-      const records = await this.prisma.tb_monitora_criancaexposta_hiv.findMany({
+        if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+          where.tb_supervisao = {
+            cnes_supervisao: this.tenantService.cnes_vinculo,
+          };
+        }
+
+        if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+          where.tb_uvis = {
+            cnes_uvis: this.tenantService.cnes_vinculo,
+          };
+        }
+
+        if (parsedFilters.id_paciente) {
+          where.id_paciente = parsedFilters.id_paciente
+        }
+
+        if (parsedFilters.id_desfecho_criexp_hiv) {
+          where.id_desfecho_criexp_hiv = parsedFilters.id_desfecho_criexp_hiv
+        }
+        /*  https://www.prisma.io/docs/orm/prisma-client/queries/filtering-and-sorting
         where: {
-          tb_unidade_monitoramento: filter_unidade_monitoramento, // Usando o objeto de filtro
+          email: {
+            endsWith: 'prisma.io',
+          },
+          posts: {
+            some: {
+              published: true,
+            },
+          },
         },
-        include: {
-          tb_periodo_arv_nascimento: {
-            select:{
-              no_periodo_arv_nascimento:true,
-            }  
-          },
-          tb_origem_monitoramento: {
-            select:{
-              no_origem_cadastro:true,
-            }  
-          },
-          tb_origem_desfecho: {
-            select:{
-              no_origem_cadastro:true,
-            }  
-          },
-          tb_maternidade: {
-            select: {
-              cnes_unidade:true,
-              no_unidade: true,
-            },
-          },
-          tb_unidade_notific_sinan: {
-            select: {
-              cnes_unidade:true,
-              no_unidade: true,
-            },
-          },
-          tb_exame_hiv_elisa_ib_apos_12: {
-            select: {
-              dt_cadastro_resultado:true,
-              tb_tipo_resultado_elisa: 
-              {
-                select: {ds_resultado_elisa:true}
-              },
-              tb_tipo_resultado_hivib: 
-              {
-                select: {ds_resultado_hivib:true}
+        */
+
+        if (parsedFilters.id_alerta_criancaexposta_hiv) {
+          where.tb_alerta_criancaexposta_hiv_monitoramento = {
+            some: {
+              id_alerta_criancaexposta_hiv: parsedFilters.id_alerta_criancaexposta_hiv
+            }
+          };
+      }
+
+
+        if (parsedFilters.tb_alerta_criancaexposta_hiv_monitoramento) {
+          where.tb_alerta_criancaexposta_hiv_monitoramento = {
+              some: {
+                id_alerta_criancaexposta_hiv: parsedFilters.tb_alerta_criancaexposta_hiv_monitoramento.id_alerta_criancaexposta_hiv
               }
-            },
+            };
+        }
+  
+      } catch (error) {
+        throw new Error('Invalid filter format');
+      }
+    }
+  
+    // Verifique se 'limit' e 'page' são valores válidos
+    const total = await this.prisma.tb_monitora_criancaexposta_hiv.count({
+      where, // Aplica o filtro dinamicamente
+    });
+  
+    // Consulta com valores válidos de skip e take
+    const records = await this.prisma.tb_monitora_criancaexposta_hiv.findMany({
+      skip,
+      take: Number(limit), // 'take' deve ser um número válido (limit)
+      where, // Aplica o filtro dinamicamente
+      include: {
+        tb_paciente: {
+          select: {
+            cns_paciente: true,
+            cns_mae: true,
+            dt_nascimento: true,
+            flg_crianca: true,
+            flg_gestante: true,
+            no_paciente: true,
+          }
+        },
+        tb_desfecho_criancaexposta_hiv: {
+          select: {
+            no_desfecho_criancaexposta_hiv: true,
           },
-          tb_exame_hiv_elisa_ib_apos_18: {
-            select: {
-              dt_cadastro_resultado:true,
-              tb_tipo_resultado_elisa: 
-              {
-                select: {ds_resultado_elisa:true}
-              },
-              tb_tipo_resultado_hivib: 
-              {
-                select: {ds_resultado_hivib:true}
-              }
-            },
-          },
-          tb_exame_hiv_elisa_ib_first: {
-            select: {
-              dt_cadastro_resultado:true,
-              tb_tipo_resultado_elisa: 
-              {
-                select: {ds_resultado_elisa:true}
-              },
-              tb_tipo_resultado_hivib: 
-              {
-                select: {ds_resultado_hivib:true}
-              }
-            },
-          },
-          tb_exame_hiv_elisa_ib_diagnostico: {
-            select: {
-              dt_cadastro_resultado:true,
-              tb_tipo_resultado_elisa: 
-              {
-                select: {ds_resultado_elisa:true}
-              },
-              tb_tipo_resultado_hivib: 
-              {
-                select: {ds_resultado_hivib:true}
-              }
-            },
-          },
-          tb_carga_viral_primeira: {
-            select: {
-              dt_recebimento: true,
-              copias: true,
-              tb_tipo_resultado_carga_viral: 
-              {
-                select: {no_tipo_resultado_carga_viral: true}
-              },
-            },
-          },
-          tb_carga_viral_penultima: {
-            select: {
-              dt_recebimento: true,
-              copias: true,
-              tb_tipo_resultado_carga_viral: 
-              {
-                select: {no_tipo_resultado_carga_viral: true}
-              },
-            },
-          },
-          tb_carga_viral_ultima: {
-            select: {
-              dt_recebimento: true,
-              copias: true,
-              tb_tipo_resultado_carga_viral: 
-              {
-                select: {no_tipo_resultado_carga_viral: true}
-              },
-            },
-          },
-          tb_unidade_monitoramento: {
-            select: {
-              cnes_unidade: true,
-              no_unidade: true,
-              id_coordenadoria: true,
-              id_supervisao: true,
-              id_uvis: true,
-              is_sae: true,
-              tb_coordenadoria: { select: { no_coordenadoria: true } },
-              tb_supervisao_to_unidade_saude: { select: { no_supervisao: true } },
-              tb_uvis: { select: { no_uvis: true } },
-            },
-          },
-          tb_paciente: {
-            select: {
-              cns_paciente: true,
-              no_paciente: true,
-              dt_nascimento: true,
-              cns_mae: true,
-              no_mae: true
-            },
-          },
-          tb_desfecho_criancaexposta_hiv: {
-            select: {
-              no_desfecho_criancaexposta_hiv: true,
-            },
-          },
-          tb_alerta_criancaexposta_hiv_monitoramento: {
-            select: {
-              tb_alerta_criancaexposta_hiv: {
-                select: {
-                    id: true,
-                    ds_alerta_reduzido_criancaexposta_hiv: true 
-                }
+        },
+        tb_alerta_criancaexposta_hiv_monitoramento: {
+          select: {
+            id_alerta_criancaexposta_hiv: true,
+            tb_alerta_criancaexposta_hiv: {
+              select: {
+                  id: true,
+                  ds_alerta_reduzido_criancaexposta_hiv: true 
               }
             }
           }
         },
-      });
-
-      return records || []; // Retorna um array vazio caso não haja registros
-    } catch (error) {
-      throw new Error('Erro ao buscar registros: ' + error.message);
-    }
+        tb_unidade_monitoramento: {
+          select: {
+            cnes_unidade: true,
+            no_unidade: true,
+            id_coordenadoria: true,
+            id_supervisao: true,
+            id_uvis: true,
+            is_sae: true,
+            tb_coordenadoria: { select: { no_coordenadoria: true } },
+            tb_supervisao_to_unidade_saude: { select: { no_supervisao: true } },
+            tb_uvis: { select: { no_uvis: true } },
+          },
+        },
+        tb_periodo_arv_nascimento: {
+          select:{
+            no_periodo_arv_nascimento:true,
+          }  
+        },
+        tb_origem_monitoramento: {
+          select:{
+            no_origem_cadastro:true,
+          }  
+        },
+        tb_origem_desfecho: {
+          select:{
+            no_origem_cadastro:true,
+          }  
+        },
+        tb_maternidade: {
+          select: {
+            cnes_unidade:true,
+            no_unidade: true,
+          },
+        },
+        tb_unidade_notific_sinan: {
+          select: {
+            cnes_unidade:true,
+            no_unidade: true,
+          },
+        },
+        tb_exame_hiv_elisa_ib_apos_12: {
+          select: {
+            dt_cadastro_resultado:true,
+            tb_tipo_resultado_elisa: 
+            {
+              select: {ds_resultado_elisa:true}
+            },
+            tb_tipo_resultado_hivib: 
+            {
+              select: {ds_resultado_hivib:true}
+            }
+          },
+        },
+        tb_exame_hiv_elisa_ib_apos_18: {
+          select: {
+            dt_cadastro_resultado:true,
+            tb_tipo_resultado_elisa: 
+            {
+              select: {ds_resultado_elisa:true}
+            },
+            tb_tipo_resultado_hivib: 
+            {
+              select: {ds_resultado_hivib:true}
+            }
+          },
+        },
+        tb_exame_hiv_elisa_ib_first: {
+          select: {
+            dt_cadastro_resultado:true,
+            tb_tipo_resultado_elisa: 
+            {
+              select: {ds_resultado_elisa:true}
+            },
+            tb_tipo_resultado_hivib: 
+            {
+              select: {ds_resultado_hivib:true}
+            }
+          },
+        },
+        tb_exame_hiv_elisa_ib_diagnostico: {
+          select: {
+            dt_cadastro_resultado:true,
+            tb_tipo_resultado_elisa: 
+            {
+              select: {ds_resultado_elisa:true}
+            },
+            tb_tipo_resultado_hivib: 
+            {
+              select: {ds_resultado_hivib:true}
+            }
+          },
+        },
+        tb_carga_viral_primeira: {
+          select: {
+            dt_recebimento: true,
+            copias: true,
+            tb_tipo_resultado_carga_viral: 
+            {
+              select: {no_tipo_resultado_carga_viral: true}
+            },
+          },
+        },
+        tb_carga_viral_penultima: {
+          select: {
+            dt_recebimento: true,
+            copias: true,
+            tb_tipo_resultado_carga_viral: 
+            {
+              select: {no_tipo_resultado_carga_viral: true}
+            },
+          },
+        },
+        tb_carga_viral_ultima: {
+          select: {
+            dt_recebimento: true,
+            copias: true,
+            tb_tipo_resultado_carga_viral: 
+            {
+              select: {no_tipo_resultado_carga_viral: true}
+            },
+          },
+        },
+      }
+    });
+  
+    // Retorna os dados paginados e o total de registros
+    return { total, records, page, lastPage: Math.ceil(total / limit) };
   }
+
 
   // Método para encontrar um registro específico por id
   async findOne(id: number) {
@@ -290,41 +337,7 @@ export class CriancaexpostahivService {
     }
   }
 
-  /*
-  // Método para atualizar um registro
-  async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
-    try {
-      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv||'');//undefined;
-      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.setMinutes(
-        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getMinutes() + updateCriancaexpostahivDto.dt_desfecho_criexp_hiv.getTimezoneOffset()
-      );
-    
-      // Atualizar o registro no banco de dados
-      const updatedRecord = await this.prisma.tb_monitora_criancaexposta_hiv.update({
-        where: { id },
-        data: updateCriancaexpostahivDto
-      });
-
-      // Registrar o log de ação
-      await this.usuariologService.logAction(
-        userKeycloak.sub,
-        userKeycloak.preferred_username,
-        'Update',
-        'tb_monitora_criancaexposta_hiv',
-        id,
-        `Atualizado registro de criança exposta HIV com ID: ${id}`
-      );
-
-      return updatedRecord;
-    } catch (error) {
-      throw new Error('Erro ao atualizar registro: ' + error.message);
-    }
-  }
-  */
-
-
-
-
+  
   // Método para remover um registro
   async remove(id: number) {
     try {
@@ -340,8 +353,97 @@ export class CriancaexpostahivService {
 
 
 
+async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfechoGeral[]> {
+  console.log('countCriancaExpostaHivDesfecho');
+  console.log(this.tenantService.hierarquia_acesso);
+  console.log(this.tenantService.cnes_vinculo);
+
+  let filter_unidade_monitoramento = {}; // Defina a variável como um objeto vazio inicialmente
+
+  // Construção do filtro com base no tipo de hierarquia_acesso
+  if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+    filter_unidade_monitoramento = {
+      tb_coordenadoria: {
+        cnes_coordenadoria: this.tenantService.cnes_vinculo,
+      },
+    };
+  }
+
+  if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+    filter_unidade_monitoramento = {
+      tb_supervisao: {
+        cnes_supervisao: this.tenantService.cnes_vinculo,
+      },
+    };
+  }
+
+  if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+    filter_unidade_monitoramento = {
+      tb_uvis: {
+        cnes_uvis: this.tenantService.cnes_vinculo,
+      },
+    };
+  }
+
+  try {
+    // Passo 1: Agrupar os registros apenas por id_desfecho_criexp_hiv
+    const result = await this.prisma.tb_monitora_criancaexposta_hiv.groupBy({
+      where: {
+        tb_unidade_monitoramento: filter_unidade_monitoramento, // Filtro da unidade de monitoramento
+      },
+      by: ['id_desfecho_criexp_hiv'], // Agora agrupando apenas por ID do desfecho
+      _count: {
+        id_desfecho_criexp_hiv: true, // Contar os registros para cada desfecho
+      },
+    });
+
+    // Passo 2: Buscar os nomes dos desfechos usando os IDs
+    const desfechos = await this.prisma.tb_desfecho_criancaexposta_hiv.findMany({
+      where: {
+        id: {
+          in: result.map(item => item.id_desfecho_criexp_hiv), // Buscar todos os desfechos que aparecem no resultado
+        },
+      },
+      select: {
+        id: true, // Garantir que estamos pegando os IDs
+        no_desfecho_criancaexposta_hiv: true, // Buscar o nome do desfecho
+      },
+    });
+
+    // Passo 3: Agrupar os resultados por desfecho
+    const groupedByDesfecho = result.reduce((acc, item) => {
+      // Encontrar o nome do desfecho correspondente
+      const desfecho = desfechos.find(d => d.id === item.id_desfecho_criexp_hiv);
+      if (!desfecho) return acc; // Se o desfecho não for encontrado, pular este item
+
+      // Criar a chave apenas com o nome do desfecho
+      const key = desfecho.no_desfecho_criancaexposta_hiv;
+
+      // Se a chave ainda não existir, inicializar o contador
+      if (!acc[key]) {
+        acc[key] = {
+          no_desfecho_criancaexposta_hiv: desfecho.no_desfecho_criancaexposta_hiv,
+          total: 0,
+        };
+      }
+
+      // Adicionar o total de registros para esse desfecho
+      acc[key].total += item._count.id_desfecho_criexp_hiv;
+
+      return acc;
+    }, {});
+
+    // Passo 4: Converter o objeto agrupado em um array
+    const countResult: CountCriancaExpostaHivDesfechoGeral[] = Object.values(groupedByDesfecho);
+
+    return countResult;
+  } catch (error) {
+    throw new Error('Erro ao contar crianças expostas por desfecho: ' + error.message);
+  }
+}
 
 
+/*
 // Método para contar crianças expostas por desfecho
 async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfechoGeral[]> {
   console.log('countCriancaExpostaHivDesfecho');
@@ -435,7 +537,7 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
     throw new Error('Erro ao contar crianças expostas por desfecho: ' + error.message);
   }
 }
-
+*/
 
   async countCriancaExpostaHivStatus(): Promise<CountCriancaExpostaHivStatus[]> {
     console.log('countCriancaExpostaHivStatus');
@@ -515,7 +617,7 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
     try {
       const result: CountCriancaExpostaHivAlerta[] = 
         await this.prisma.$queryRaw`
-          select 	ale.id as id_alerta,
+          select 	ale.id as id_alerta_criancaexposta_hiv,
                   ale.ds_alerta_reduzido_criancaexposta_hiv as no_alerta,
                   count(ale_mce.id_monitora_criancaexposta_hiv) as qt_monitoramento	
           from      app.tb_alerta_criancaexposta_hiv                ale     
@@ -532,6 +634,7 @@ async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfe
       // Processar os resultados e converter qualquer BigInt para Number ou String
       const processedResults = result.map(item => {
         return {
+          id_alerta_criancaexposta_hiv: item.id_alerta_criancaexposta_hiv,
           no_alerta: item.no_alerta,
           qt_monitoramento: Number(item.qt_monitoramento), // Converter BigInt para Number
         };

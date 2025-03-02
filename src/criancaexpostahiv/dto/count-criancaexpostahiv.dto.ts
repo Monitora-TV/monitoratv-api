@@ -23,6 +23,7 @@ export class CountCriancaExpostaHivStatus {
 }
 
 export class CountCriancaExpostaHivAlerta {
+  id_alerta_criancaexposta_hiv: number;  
   no_alerta: string;
   qt_monitoramento: number;
 }

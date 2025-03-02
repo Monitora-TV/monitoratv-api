@@ -15,6 +15,20 @@ import { AuthenticatedUser } from 'nest-keycloak-connect';
 export class CriancaexpostahivController {
   constructor(private readonly criancaexpostahivService: CriancaexpostahivService) {}
 
+
+  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
+  @Get()
+  @ApiOperation({ summary: 'Listar registros Criança Exposta com filtros' })
+  @ApiResponse({ status: 200, description: 'Lista de Criança Exposta retornada.' })
+  async findAll(
+    @Query('page') page: number, // Recebe 'page' da URL como parâmetro
+    @Query('limit') limit: number, // Recebe 'limit' da URL como parâmetro
+    @Query('filters') filters?: any // Recebe filtros dinâmicos se existirem
+  ) {
+    return await this.criancaexpostahivService.findAll(page, limit, filters);
+  }
+
+
   // Endpoint para contar registros de Criança Exposta por Desfecho
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
   @Get('countcriancaexpostahivdesfechogeral')
@@ -62,15 +76,6 @@ export class CriancaexpostahivController {
     return this.criancaexpostahivService.create(createCriancaexpostahivDto);
   }
 
-
-  // Rota para listar todos os registros de Criança Exposta
-  @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
-  @Get()
-  @ApiOperation({ summary: 'Listar todos os registros de Criança Exposta' })
-  @ApiResponse({ status: 200, description: 'Lista de Criança Exposta retornada.' })
-  async findAll() {
-    return await this.criancaexpostahivService.findAll();
-  }
 
   // Rota para buscar um registro específico de Criança Exposta por ID
   @UseGuards(JwtGuard, TenantGuard) // Protege com JwtGuard e TenantGuard
