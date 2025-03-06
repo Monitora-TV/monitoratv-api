@@ -7,6 +7,10 @@ export class CreateCriancaexpostahivDto {
   
       @IsOptional()
       @IsInt()
+      id_paciente_mae: number;
+  
+      @IsOptional()
+      @IsInt()
       id_monitora_gestante_hiv: number;
   
       @IsOptional()

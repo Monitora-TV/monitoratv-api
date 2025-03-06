@@ -153,16 +153,14 @@ export class TbpacienteService {
 
   async update(id: number, updateTbpacienteDto: UpdateTbpacienteDto, userKeycloak: any) {
 
-      updateTbpacienteDto.dt_nascimento = new Date(updateTbpacienteDto.dt_nascimento||'');
-      updateTbpacienteDto.dt_nascimento.setMinutes(
-        updateTbpacienteDto.dt_nascimento.getMinutes() + updateTbpacienteDto.dt_nascimento.getTimezoneOffset()
-      );
-      updateTbpacienteDto.dt_atualizacao = new Date(updateTbpacienteDto.dt_atualizacao||'');
-      updateTbpacienteDto.dt_atualizacao.setMinutes(
-        updateTbpacienteDto.dt_atualizacao.getMinutes() + updateTbpacienteDto.dt_atualizacao.getTimezoneOffset()
-      );
-
-
+    if (updateTbpacienteDto.dt_nascimento)
+      {
+        updateTbpacienteDto.dt_nascimento = new Date(updateTbpacienteDto.dt_nascimento||'');
+        updateTbpacienteDto.dt_nascimento.setMinutes(
+          updateTbpacienteDto.dt_nascimento.getMinutes() + updateTbpacienteDto.dt_nascimento.getTimezoneOffset()
+        );
+      }
+  
     const updatedRecord = await this.prisma.tb_paciente.update({
       where: { id },
       data: updateTbpacienteDto,

@@ -26,28 +26,28 @@ export class TbcargaviralService {
       );
     }
 
-      if (createTbcargaviralDto.dt_recebimento)
-      {
-        createTbcargaviralDto.dt_recebimento = new Date(createTbcargaviralDto.dt_recebimento||'');
-        createTbcargaviralDto.dt_recebimento.setMinutes(
-          createTbcargaviralDto.dt_recebimento.getMinutes() + createTbcargaviralDto.dt_recebimento.getTimezoneOffset()
-        );
-      }
+    if (createTbcargaviralDto.dt_recebimento)
+    {
+      createTbcargaviralDto.dt_recebimento = new Date(createTbcargaviralDto.dt_recebimento||'');
+      createTbcargaviralDto.dt_recebimento.setMinutes(
+        createTbcargaviralDto.dt_recebimento.getMinutes() + createTbcargaviralDto.dt_recebimento.getTimezoneOffset()
+      );
+    }
 
-      const existingRecord = await this.prisma.tb_carga_viral.findFirst({
-        where: {
-          codigo: createTbcargaviralDto.codigo,
-          id_paciente: createTbcargaviralDto.id_paciente,
-          id_tipo_resultado_carga_viral: createTbcargaviralDto.id_tipo_resultado_carga_viral,
-          dt_recebimento: createTbcargaviralDto.dt_recebimento,
-        },
-      });
-      if (existingRecord) {
-      	throw new Error('Já existe um registro com esse no_filtro.');
-      }
-      const newRecord = await this.prisma.tb_carga_viral.create({
-      	data: createTbcargaviralDto,
-      });
+    const existingRecord = await this.prisma.tb_carga_viral.findFirst({
+      where: {
+        codigo: createTbcargaviralDto.codigo,
+        id_paciente: createTbcargaviralDto.id_paciente,
+        id_tipo_resultado_carga_viral: createTbcargaviralDto.id_tipo_resultado_carga_viral,
+        dt_recebimento: createTbcargaviralDto.dt_recebimento,
+      },
+    });
+    if (existingRecord) {
+      throw new Error('Já existe um registro com esse no_filtro.');
+    }
+    const newRecord = await this.prisma.tb_carga_viral.create({
+      data: createTbcargaviralDto,
+    });
 
       await this.usuariologService.logAction(
       	userKeycloak.sub,
