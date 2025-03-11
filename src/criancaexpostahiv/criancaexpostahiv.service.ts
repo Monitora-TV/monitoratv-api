@@ -159,7 +159,7 @@ export class CriancaexpostahivService {
           select: {
             cnes_unidade: true,
             no_unidade: true,
-            id_coordenadoria: true,
+            //id_coordenadoria: true,
             id_supervisao: true,
             id_uvis: true,
             is_sae: true,
