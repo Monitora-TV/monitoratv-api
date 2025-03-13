@@ -42,40 +42,53 @@ export class CriancaexpostahivService {
 
     // Defina um objeto onde todos os filtros serão aplicados dinamicamente
     const where: any = {};
+
+
+    /*  https://www.prisma.io/docs/orm/prisma-client/queries/filtering-and-sorting
+    where: {
+      email: {
+        endsWith: 'prisma.io',
+      },
+      posts: {
+        some: {
+          published: true,
+        },
+      },
+    },
+    */
+
+
+    // Construção do filtro com base no tipo de hierarquia_acesso
+    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+      where.tb_coordenadoria = {
+          cnes_coordenadoria: this.tenantService.cnes_vinculo,
+        };
+    }
+
+    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+      where.tb_supervisao = {
+        cnes_supervisao: this.tenantService.cnes_vinculo,
+      };
+    }
+
+    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+      where.tb_uvis = {
+        cnes_uvis: this.tenantService.cnes_vinculo,
+      };
+    }
+
   
     if (filters) {
-      try {
-        // Caso o filtro seja passado como string, tenta-se fazer o parse para um objeto
         const parsedFilters = JSON.parse(filters);
 
-        console.log(parsedFilters);
-
-
-        // Construção do filtro com base no tipo de hierarquia_acesso
-        if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-          where.tb_coordenadoria = {
-              cnes_coordenadoria: this.tenantService.cnes_vinculo,
-            };
-        }
-
-        if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-          where.tb_supervisao = {
-            cnes_supervisao: this.tenantService.cnes_vinculo,
-          };
-        }
-
-        if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-          where.tb_uvis = {
-            cnes_uvis: this.tenantService.cnes_vinculo,
-          };
-        }
-
-        if (parsedFilters.tb_unidade_monitoramento.id_coordenadoria) {
+        // console.log(parsedFilters);
+        // console.log(parsedFilters.id_alerta_criancaexposta_hiv);
+        // Verifica se a chave 'tb_unidade_monitoramento' existe no parsedFilters
+        if (parsedFilters.tb_unidade_monitoramento && parsedFilters.tb_unidade_monitoramento.id_coordenadoria) {
           where.tb_unidade_monitoramento = {
-            id_coordenadoria: parsedFilters.tb_unidade_monitoramento.id_coordenadoria
-            };
-        }
-
+              id_coordenadoria: parsedFilters.tb_unidade_monitoramento.id_coordenadoria
+          };
+        }        
 
         if (parsedFilters.id_paciente) {
           where.id_paciente = parsedFilters.id_paciente
@@ -84,18 +97,6 @@ export class CriancaexpostahivService {
         if (parsedFilters.id_desfecho_criexp_hiv) {
           where.id_desfecho_criexp_hiv = parsedFilters.id_desfecho_criexp_hiv
         }
-        /*  https://www.prisma.io/docs/orm/prisma-client/queries/filtering-and-sorting
-        where: {
-          email: {
-            endsWith: 'prisma.io',
-          },
-          posts: {
-            some: {
-              published: true,
-            },
-          },
-        },
-        */
 
         if (parsedFilters.id_alerta_criancaexposta_hiv) {
           where.tb_alerta_criancaexposta_hiv_monitoramento = {
@@ -104,18 +105,7 @@ export class CriancaexpostahivService {
             }
           };
         }
-
-        if (parsedFilters.tb_alerta_criancaexposta_hiv_monitoramento) {
-          where.tb_alerta_criancaexposta_hiv_monitoramento = {
-              some: {
-                id_alerta_criancaexposta_hiv: parsedFilters.tb_alerta_criancaexposta_hiv_monitoramento.id_alerta_criancaexposta_hiv
-              }
-            };
-        }
   
-      } catch (error) {
-        throw new Error('Invalid filter format');
-      }
     }
   
     // Verifique se 'limit' e 'page' são valores válidos
