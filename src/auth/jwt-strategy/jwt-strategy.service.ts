@@ -10,6 +10,7 @@ export class JwtStrategyService extends PassportStrategy(Strategy, 'jwt') {
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
       secretOrKey: configService.get('JWT_SECRET'),
+      algorithms: ['RS256'], // importante para indicar que está usando RSA
     });
   }
 
@@ -17,3 +18,4 @@ export class JwtStrategyService extends PassportStrategy(Strategy, 'jwt') {
     return payload; //delimito as informacoes do user
   }
 }
+
