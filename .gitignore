@@ -2,6 +2,10 @@
 dtic-gustavo.k.pem
 dtic-gustavo.k.ppk
 
+# TESTES
+ApiSMS.http
+Api.http
+keycloak.http
 
 # compiled output
 /dist

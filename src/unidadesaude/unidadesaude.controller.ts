@@ -5,7 +5,6 @@ import { UpdateUnidadesaudeDto } from './dto/update-unidadesaude.dto';
 import { JwtGuard } from './../auth/auth/jwt.guard'; // Guard de Autenticação JWT
 import { TenantGuard } from './../tenant/tenant.guard'; // Guard de Tenant (verificação de acesso)
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger'; // Para a documentação OpenAPI
-import { query } from 'express';
 import { tb_unidade_saude } from '@prisma/client';
 
 
