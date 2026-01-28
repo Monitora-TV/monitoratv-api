@@ -3,7 +3,7 @@ import { CreateTbpacienteDto } from './dto/create-tbpaciente.dto';
 import { UpdateTbpacienteDto } from './dto/update-tbpaciente.dto';
 import { tb_paciente } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 import { Prisma } from '@prisma/client';
 

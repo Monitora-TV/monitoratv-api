@@ -23,10 +23,3 @@ export class AuthService {
     return data;
   }
 }
-//auth0 - jsonwebtoken
-
-// client_id=nest
-// &client_secret=625baf8d-2be8-4850-95cc-ec19c0be2752
-// &grant_type=password
-// &username=user1@user.com
-// &password=123456

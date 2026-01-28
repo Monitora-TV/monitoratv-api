@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateMaternidadeDto } from './dto/create-maternidade.dto';
 import { UpdateMaternidadeDto } from './dto/update-maternidade.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { UserContextService } from 'src/auth/user-context/user-context.service';
 
 @Injectable()
 export class MaternidadeService {
@@ -10,7 +10,7 @@ export class MaternidadeService {
   private readonly prisma: PrismaService;
 
   @Inject()
-  private readonly tenantService: TenantService;
+  private readonly userContextService: UserContextService;
 
   // Método para criar um novo registro
   async create(createMaternidadeDto: CreateMaternidadeDto) {
@@ -33,7 +33,7 @@ export class MaternidadeService {
 
   // Método para obter todos os registros
   async findAll() {
-    console.log(this.tenantService.hierarquia_acesso);
+    console.log(this.userContextService.hierarquia);
     return await this.prisma.tb_maternidade.findMany();
   }
 

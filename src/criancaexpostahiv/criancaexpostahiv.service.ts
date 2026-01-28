@@ -1,279 +1,174 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
-import { CountCriancaExpostaHivDesfechoGeral, CountCriancaExpostaHivStatus, CountCriancaExpostaHivAlerta, CountCriancaExpostaHivDesfecho } from './dto/count-criancaexpostahiv.dto';
-import { UpdateTbpacienteDto } from 'src/tbpaciente/dto/update-tbpaciente.dto';
-import { UsuariologService } from 'src/usuariolog/usuariolog.service'; // Importando o serviço de logs
+import { PrismaService } from 'src/database/prisma.service';
+import { UserContextService } from 'src/auth/user-context/user-context.service';
+import {
+  CountCriancaExpostaHivDesfechoGeral,
+  CountCriancaExpostaHivStatus,
+  CountCriancaExpostaHivAlerta,
+  CountCriancaExpostaHivDesfecho,
+} from './dto/count-criancaexpostahiv.dto';
+import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 import { Prisma } from '@prisma/client';
 // Extendendo o dayjs com o plugin utc
 //dayjs.extend(utc);
 
-
 @Injectable()
 export class CriancaexpostahivService {
   @Inject() private readonly prisma: PrismaService;
-  @Inject() private readonly tenantService: TenantService;
-  @Inject() private readonly usuariologService: UsuariologService; // Injetando o serviço de logs
-
-
-
-  // Método para criar um novo registro
+  @Inject() private readonly userContext: UserContextService;
+  @Inject() private readonly usuariologService: UsuariologService;
+  
+  // ===============================
+  // CREATE
+  // ===============================
   async create(createCriancaexpostahivDto: any) {
-    const existingRecord = await this.prisma.tb_monitora_criancaexposta_hiv.findFirst({
-      where: {
-        id_paciente: createCriancaexpostahivDto.id_paciente, // Exemplo de validação para paciente
-      },
-    });
+    const existingRecord =
+      await this.prisma.tb_monitora_criancaexposta_hiv.findFirst({
+        where: {
+          id_paciente: createCriancaexpostahivDto.id_paciente,
+        },
+      });
 
     if (existingRecord) {
       throw new Error('Já existe um registro com este id_paciente.');
     }
 
-    const newRecord = await this.prisma.tb_monitora_criancaexposta_hiv.create({
+    return this.prisma.tb_monitora_criancaexposta_hiv.create({
       data: createCriancaexpostahivDto,
     });
-
-    return newRecord;
   }
 
+  // ===============================
+  // FIND ALL
+  // ===============================
   async findAll(page: number, limit: number, filters?: string) {
-    // Garantir que o skip é um número válido
-    const skip = (page > 0 ? page - 1 : 0) * (limit > 0 ? limit : 10); // Se 'page' ou 'limit' não forem válidos, use valores padrão    //const skip = (page - 1) * limit;
+    const skip =
+      (page > 0 ? page - 1 : 0) * (limit > 0 ? limit : 10);
 
-    // Defina um objeto onde todos os filtros serão aplicados dinamicamente
+    //const where: Prisma.tb_monitora_criancaexposta_hivWhereInput = {};
+
     const where: any = {};
 
+    const { hierarquia, cnes } = this.userContext;
 
-    /*  https://www.prisma.io/docs/orm/prisma-client/queries/filtering-and-sorting
-    where: {
-      email: {
-        endsWith: 'prisma.io',
-      },
-      posts: {
-        some: {
-          published: true,
-        },
-      },
-    },
-    */
-
-
-    // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+    /**
+     * REGRAS DE ACESSO POR HIERARQUIA
+     * SMS → vê tudo (não aplica filtro)
+     * demais → filtra por CNES
+     */
+    if (hierarquia === 'coordenadoria_regional') {
       where.tb_coordenadoria = {
-          cnes_coordenadoria: this.tenantService.cnes_vinculo,
-        };
+        cnes_coordenadoria: { in: cnes },
+      };
     }
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+    if (hierarquia === 'supervisao_tecnica') {
       where.tb_supervisao = {
-        cnes_supervisao: this.tenantService.cnes_vinculo,
+        cnes_supervisao: { in: cnes },
       };
     }
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+    if (hierarquia === 'supervisao_uvis') {
       where.tb_uvis = {
-        cnes_uvis: this.tenantService.cnes_vinculo,
+        cnes_uvis: { in: cnes },
       };
     }
 
-  
-    if (filters) {
-        const parsedFilters = JSON.parse(filters);
-
-        // console.log(parsedFilters);
-        // console.log(parsedFilters.id_alerta_criancaexposta_hiv);
-        // Verifica se a chave 'tb_unidade_monitoramento' existe no parsedFilters
-        if (parsedFilters.tb_unidade_monitoramento && parsedFilters.tb_unidade_monitoramento.id_coordenadoria) {
-          where.tb_unidade_monitoramento = {
-              id_coordenadoria: parsedFilters.tb_unidade_monitoramento.id_coordenadoria
-          };
-        }        
-
-        if (parsedFilters.id_paciente) {
-          where.id_paciente = parsedFilters.id_paciente
-        }
-
-        if (parsedFilters.id_desfecho_criexp_hiv) {
-          where.id_desfecho_criexp_hiv = parsedFilters.id_desfecho_criexp_hiv
-        }
-
-        if (parsedFilters.id_alerta_criancaexposta_hiv) {
-          where.tb_alerta_criancaexposta_hiv_monitoramento = {
-            some: {
-              id_alerta_criancaexposta_hiv: parsedFilters.id_alerta_criancaexposta_hiv
-            }
-          };
-        }
-  
+    if (hierarquia === 'UBS') {
+      where.tb_unidade_monitoramento = {
+        cnes_unidade: { in: cnes },
+      };
     }
-  
-    // Verifique se 'limit' e 'page' são valores válidos
-    const total = await this.prisma.tb_monitora_criancaexposta_hiv.count({
-      where, // Aplica o filtro dinamicamente
-    });
-  
-    // Consulta com valores válidos de skip e take
-    const records = await this.prisma.tb_monitora_criancaexposta_hiv.findMany({
-      skip,
-      take: Number(limit), // 'take' deve ser um número válido (limit)
-      where, // Aplica o filtro dinamicamente
-      include: {
-        tb_paciente: {
-          select: {
-            cns_paciente: true,
-            cns_mae: true,
-            dt_nascimento: true,
-            flg_crianca: true,
-            flg_gestante: true,
-            no_paciente: true,
-          }
-        },
-        tb_desfecho_criancaexposta_hiv: {
-          select: {
-            no_desfecho_criancaexposta_hiv: true,
-          },
-        },
-        tb_alerta_criancaexposta_hiv_monitoramento: {
-          select: {
-            id_alerta_criancaexposta_hiv: true,
-            tb_alerta_criancaexposta_hiv: {
-              select: {
-                  id: true,
-                  ds_alerta_reduzido_criancaexposta_hiv: true 
-              }
-            }
-          }
-        },
-        tb_unidade_monitoramento: {
-          select: {
-            cnes_unidade: true,
-            no_unidade: true,
-            //id_coordenadoria: true,
-            id_supervisao: true,
-            id_uvis: true,
-            is_sae: true,
-            tb_coordenadoria: { select: { no_coordenadoria: true } },
-            tb_supervisao: { select: { no_supervisao: true } },
-            tb_uvis: { select: { no_uvis: true } },
-          },
-        },
-        tb_periodo_arv_nascimento: {
-          select:{
-            no_periodo_arv_nascimento:true,
-          }  
-        },
-        tb_origem_monitoramento: {
-          select:{
-            no_origem_cadastro:true,
-          }  
-        },
-        tb_origem_desfecho: {
-          select:{
-            no_origem_cadastro:true,
-          }  
-        },
-        tb_maternidade: {
-          select: {
-            cnes_unidade:true,
-            no_unidade: true,
-          },
-        },
-        tb_unidade_notific_sinan: {
-          select: {
-            cnes_unidade:true,
-            no_unidade: true,
-          },
-        },
-        tb_exame_hiv_elisa_ib_apos_12: {
-          select: {
-            dt_cadastro_resultado:true,
-            tb_tipo_resultado_elisa: 
-            {
-              select: {ds_resultado_elisa:true}
-            },
-            tb_tipo_resultado_hivib: 
-            {
-              select: {ds_resultado_hivib:true}
-            }
-          },
-        },
-        tb_exame_hiv_elisa_ib_apos_18: {
-          select: {
-            dt_cadastro_resultado:true,
-            tb_tipo_resultado_elisa: 
-            {
-              select: {ds_resultado_elisa:true}
-            },
-            tb_tipo_resultado_hivib: 
-            {
-              select: {ds_resultado_hivib:true}
-            }
-          },
-        },
-        tb_exame_hiv_elisa_ib_first: {
-          select: {
-            dt_cadastro_resultado:true,
-            tb_tipo_resultado_elisa: 
-            {
-              select: {ds_resultado_elisa:true}
-            },
-            tb_tipo_resultado_hivib: 
-            {
-              select: {ds_resultado_hivib:true}
-            }
-          },
-        },
-        tb_exame_hiv_elisa_ib_diagnostico: {
-          select: {
-            dt_cadastro_resultado:true,
-            tb_tipo_resultado_elisa: 
-            {
-              select: {ds_resultado_elisa:true}
-            },
-            tb_tipo_resultado_hivib: 
-            {
-              select: {ds_resultado_hivib:true}
-            }
-          },
-        },
-        tb_carga_viral_primeira: {
-          select: {
-            dt_recebimento: true,
-            copias: true,
-            tb_tipo_resultado_carga_viral: 
-            {
-              select: {no_tipo_resultado_carga_viral: true}
-            },
-          },
-        },
-        tb_carga_viral_penultima: {
-          select: {
-            dt_recebimento: true,
-            copias: true,
-            tb_tipo_resultado_carga_viral: 
-            {
-              select: {no_tipo_resultado_carga_viral: true}
-            },
-          },
-        },
-        tb_carga_viral_ultima: {
-          select: {
-            dt_recebimento: true,
-            copias: true,
-            tb_tipo_resultado_carga_viral: 
-            {
-              select: {no_tipo_resultado_carga_viral: true}
-            },
-          },
-        },
-      }
-    });
-  
-    // Retorna os dados paginados e o total de registros
-    return { total, records, page, lastPage: Math.ceil(total / limit) };
-  }
 
+    // ===============================
+    // FILTROS DINÂMICOS
+    // ===============================
+    if (filters) {
+      const parsedFilters = JSON.parse(filters);
+
+      if (
+        parsedFilters.tb_unidade_monitoramento?.id_coordenadoria
+      ) {
+        where.tb_unidade_monitoramento = {
+          ...where.tb_unidade_monitoramento,
+          id_coordenadoria:
+            parsedFilters.tb_unidade_monitoramento.id_coordenadoria,
+        };
+      }
+
+      if (parsedFilters.id_paciente) {
+        where.id_paciente = parsedFilters.id_paciente;
+      }
+
+      if (parsedFilters.id_desfecho_criexp_hiv) {
+        where.id_desfecho_criexp_hiv =
+          parsedFilters.id_desfecho_criexp_hiv;
+      }
+
+      if (parsedFilters.id_alerta_criancaexposta_hiv) {
+        where.tb_alerta_criancaexposta_hiv_monitoramento = {
+          some: {
+            id_alerta_criancaexposta_hiv:
+              parsedFilters.id_alerta_criancaexposta_hiv,
+          },
+        };
+      }
+    }
+
+    const total =
+      await this.prisma.tb_monitora_criancaexposta_hiv.count({
+        where,
+      });
+
+    const records =
+      await this.prisma.tb_monitora_criancaexposta_hiv.findMany({
+        skip,
+        take: Number(limit),
+        where,
+        include: {
+          tb_paciente: {
+            select: {
+              cns_paciente: true,
+              cns_mae: true,
+              dt_nascimento: true,
+              flg_crianca: true,
+              flg_gestante: true,
+              no_paciente: true,
+            },
+          },
+          tb_desfecho_criancaexposta_hiv: {
+            select: {
+              no_desfecho_criancaexposta_hiv: true,
+            },
+          },
+          tb_unidade_monitoramento: {
+            select: {
+              cnes_unidade: true,
+              no_unidade: true,
+              id_supervisao: true,
+              id_uvis: true,
+              is_sae: true,
+              tb_coordenadoria: {
+                select: { no_coordenadoria: true },
+              },
+              tb_supervisao: {
+                select: { no_supervisao: true },
+              },
+              tb_uvis: {
+                select: { no_uvis: true },
+              },
+            },
+          },
+        },
+      });
+
+    return {
+      total,
+      records,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
+  }
 
   // Método para encontrar um registro específico por id
   async findOne(id: number) {
@@ -443,7 +338,73 @@ export class CriancaexpostahivService {
     }
   }
 
+async update(id: number, updateCriancaexpostahivDto: any) {
+  try {
+    /**
+     * Tratamento da data de desfecho (mantendo lógica original)
+     */
+    if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv === null) {
+      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = null;
+    } else if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv) {
+      const data = new Date(
+        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv,
+      );
 
+      data.setMinutes(
+        data.getMinutes() + data.getTimezoneOffset(),
+      );
+
+      updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = data;
+    }
+
+    /**
+     * Atualiza vínculo mãe → paciente, se informado
+     */
+    if (
+      updateCriancaexpostahivDto.id_paciente_mae !== null &&
+      updateCriancaexpostahivDto.id_paciente !== null
+    ) {
+      await this.prisma.tb_paciente.update({
+        where: {
+          id: Number(updateCriancaexpostahivDto.id_paciente),
+        },
+        data: {
+          id_paciente_mae:
+            updateCriancaexpostahivDto.id_paciente_mae,
+        },
+      });
+    }
+
+    /**
+     * Update principal
+     */
+    const updatedRecord =
+      await this.prisma.tb_monitora_criancaexposta_hiv.update({
+        where: { id },
+        data: updateCriancaexpostahivDto,
+      });
+
+    /**
+     * Log de auditoria (via UserContext)
+     */
+    await this.usuariologService.logAction(
+      this.userContext.userId ?? 'system',
+      this.userContext.username ?? 'system',
+      'UPDATE',
+      'tb_monitora_criancaexposta_hiv',
+      id,
+      `Atualizado registro de criança exposta HIV com ID: ${id}`,
+    );
+
+    return updatedRecord;
+  } catch (error) {
+    throw new Error(
+      'Erro ao atualizar registro: ' + error.message,
+    );
+  }
+}
+
+/*
   async update(id: number, updateCriancaexpostahivDto: any, userKeycloak: any) {
     try {
       // Verifique se a data é nula e defina corretamente.
@@ -489,7 +450,7 @@ export class CriancaexpostahivService {
       throw new Error('Erro ao atualizar registro: ' + error.message);
     }
   }
-
+*/
   
   // Método para remover um registro
   async remove(id: number) {
@@ -506,22 +467,23 @@ export class CriancaexpostahivService {
 
 
   async countCriancaExpostaHivDesfechoGeral(): Promise<CountCriancaExpostaHivDesfechoGeral[]> {
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
+    console.log(this.userContext.hierarquia);
+    console.log(this.userContext.cnes);
   
     let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
-  
+
+    const { hierarquia, cnes } = this.userContext;
     // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${cnes}::text`;
     }
   
     try {
@@ -561,23 +523,26 @@ export class CriancaexpostahivService {
 
 
   async countCriancaExpostaHivStatus(): Promise<CountCriancaExpostaHivStatus[]> {
+
+    const { hierarquia, cnes } = this.userContext;
+
     console.log('countCriancaExpostaHivStatus');
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
+    console.log(hierarquia);
+    console.log(cnes);
   
     let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
   
     // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${cnes}::text`;
     }
   
     try {
@@ -616,23 +581,27 @@ export class CriancaexpostahivService {
 
 
   async countCriancaExpostaHivAlerta(): Promise<CountCriancaExpostaHivAlerta[]> {
+
+    const { hierarquia, cnes } = this.userContext;
+
+
     console.log('CountCriancaExpostaHivAlerta');
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
+    console.log(hierarquia);
+    console.log(cnes);
   
     let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
   
     // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${cnes}::text`;
     }
   
     try {
@@ -671,22 +640,27 @@ export class CriancaexpostahivService {
 
 
   async countCriancaExpostaHivDesfecho(): Promise<CountCriancaExpostaHivDesfecho[]> {
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
+
+
+    const { hierarquia, cnes } = this.userContext;
+
+
+    console.log(hierarquia);
+    console.log(cnes);
   
     let filter_unidade_monitoramento = ''; // Defina a variável como uma string vazia inicialmente
   
     // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
-      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'coordenadoria_regional') {
+      filter_unidade_monitoramento = `AND coo.cnes_coordenadoria = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
-      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_tecnica') {
+      filter_unidade_monitoramento = `AND sts.cnes_supervisao = ${cnes}::text`;
     }
   
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
-      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${this.tenantService.cnes_vinculo}::text`;
+    if (hierarquia === 'supervisao_uvis') {
+      filter_unidade_monitoramento = `AND uvi.cnes_uvis = ${cnes}::text`;
     }
   
     try {

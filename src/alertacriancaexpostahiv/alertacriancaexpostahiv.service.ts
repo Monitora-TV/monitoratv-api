@@ -2,7 +2,8 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateAlertacriancaexpostahivDto } from './dto/create-alertacriancaexpostahiv.dto';
 import { UpdateAlertacriancaexpostahivDto } from './dto/update-alertacriancaexpostahiv.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { UserContextService } from 'src/auth/user-context/user-context.service';
+//import { userContextService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 
 
 @Injectable()
@@ -11,7 +12,7 @@ export class AlertacriancaexpostahivService {
   private readonly prisma: PrismaService;
 
   @Inject()
-  private readonly tenantService: TenantService;
+  private readonly userContextService: UserContextService;
 
   // Método para criar um novo registro
   async create(createAlertacriancaexpostahivDto: CreateAlertacriancaexpostahivDto) {
@@ -35,7 +36,7 @@ export class AlertacriancaexpostahivService {
 
   // Método para obter todos os registros
   async findAll() {
-    console.log(this.tenantService.hierarquia_acesso);
+    console.log(this.userContextService.hierarquia);
     return await this.prisma.tb_alerta_criancaexposta_hiv.findMany();
   }
 

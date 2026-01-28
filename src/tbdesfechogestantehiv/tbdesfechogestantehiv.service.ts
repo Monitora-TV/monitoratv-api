@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateTbdesfechogestantehivDto } from './dto/create-tbdesfechogestantehiv.dto';
 import { UpdateTbdesfechogestantehivDto } from './dto/update-tbdesfechogestantehiv.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 
 @Injectable()
 export class TbdesfechogestantehivService {

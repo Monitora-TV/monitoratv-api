@@ -1,21 +1,25 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import * as jwksRsa from 'jwks-rsa';
 
 @Injectable()
-export class JwtStrategyService extends PassportStrategy(Strategy, 'jwt') {
-  constructor(configService: ConfigService) {
+export class JwtStrategy extends PassportStrategy(Strategy) {
+  constructor() {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      ignoreExpiration: false,
-      secretOrKey: configService.get('JWT_SECRET'),
-      algorithms: ['RS256'], // importante para indicar que está usando RSA
+      algorithms: ['RS256'],
+      issuer: process.env.OIDC_ISSUER,
+      secretOrKeyProvider: jwksRsa.passportJwtSecret({
+        cache: true,
+        rateLimit: true,
+        jwksRequestsPerMinute: 5,
+        jwksUri: `${process.env.OIDC_ISSUER}/protocol/openid-connect/certs`,
+      }),
     });
   }
 
-  async validate(payload) {
-    return payload; //delimito as informacoes do user
+  async validate(payload: any) {
+    return payload; // vai para request.user
   }
 }
-

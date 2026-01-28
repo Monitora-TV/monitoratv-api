@@ -4,7 +4,7 @@ import { CreateTbunidadesaudeDto } from './dto/create-tbunidadesaude.dto';
 import { UpdateTbunidadesaudeDto } from './dto/update-tbunidadesaude.dto';
 import { tb_unidade_saude } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 import { Prisma } from '@prisma/client';
 

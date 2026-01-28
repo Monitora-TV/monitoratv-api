@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { TenantService } from 'src/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
 
 @Injectable()
 export class UsuarioService {

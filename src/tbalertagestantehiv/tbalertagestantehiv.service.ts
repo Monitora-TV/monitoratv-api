@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateTbalertagestantehivDto } from './dto/create-tbalertagestantehiv.dto';
 import { UpdateTbalertagestantehivDto } from './dto/update-tbalertagestantehiv.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 
 @Injectable()
 export class TbalertagestantehivService {

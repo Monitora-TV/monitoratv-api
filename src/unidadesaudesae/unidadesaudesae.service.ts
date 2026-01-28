@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUnidadesaudesaeDto } from './dto/create-unidadesaudesae.dto';
 import { UpdateUnidadesaudesaeDto } from './dto/update-unidadesaudesae.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { UserContextService } from 'src/auth/user-context/user-context.service';
 
 
 @Injectable()
@@ -11,7 +11,7 @@ export class UnidadesaudesaeService {
   private readonly prisma: PrismaService;
 
   @Inject()
-  private readonly tenantService: TenantService;
+  private readonly userContextService: UserContextService;
 
   // Método para criar um novo registro
   async create(createUnidadesaudesaeDto: CreateUnidadesaudesaeDto) {
@@ -42,32 +42,32 @@ export class UnidadesaudesaeService {
 
   async findAll() {
     console.log('findall SAE');
-    console.log(this.tenantService.hierarquia_acesso);
-    console.log(this.tenantService.cnes_vinculo);
+    console.log(this.userContextService.hierarquia);
+    console.log(this.userContextService.cnes);
 
     let filter_unidade_sae = {}; // Defina a variável como um objeto vazio inicialmente
 
     // Construção do filtro com base no tipo de hierarquia_acesso
-    if (this.tenantService.hierarquia_acesso === 'coordenadoria_regional') {
+    if (this.userContextService.hierarquia  === 'coordenadoria_regional') {
       filter_unidade_sae = {
         tb_coordenadoria: {
-          cnes_coordenadoria: this.tenantService.cnes_vinculo,
+          cnes_coordenadoria: this.userContextService.cnes,
         },
       };
     }
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_tecnica') {
+    if (this.userContextService.hierarquia  === 'supervisao_tecnica') {
       filter_unidade_sae = {
         tb_supervisao: {
-          cnes_supervisao: this.tenantService.cnes_vinculo,
+          cnes_supervisao: this.userContextService.cnes,
         },
       };
     }
 
-    if (this.tenantService.hierarquia_acesso === 'supervisao_uvis') {
+    if (this.userContextService.hierarquia  === 'supervisao_uvis') {
       filter_unidade_sae = {
         tb_uvis: {
-          cnes_uvis: this.tenantService.cnes_vinculo,
+          cnes_uvis: this.userContextService.cnes,
         },
       };
     }

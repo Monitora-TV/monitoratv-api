@@ -3,7 +3,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateTbtiporesultadoelisaDto } from './dto/create-tbtiporesultadoelisa.dto';
 import { UpdateTbtiporesultadoelisaDto } from './dto/update-tbtiporesultadoelisa.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 
 @Injectable()

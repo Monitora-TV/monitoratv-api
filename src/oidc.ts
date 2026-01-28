@@ -11,15 +11,31 @@ export async function createDecodeAccessToken() {
 
   const { verifyAndDecodeAccessToken } = await createOidcBackend({
     issuerUri: oidcIssuerUri,
+
+    decodedAccessTokenSchema: z.object({
+      sub: z.string(),
+      preferred_username: z.string(),
+      email: z.string(),
+      realm_access: z.object({
+        roles: z.array(z.string())
+      }),
+      groups: z.array(z.string())
+    })
+
+    /*
     decodedAccessTokenSchema: z.object({
       sub: z.string(),
       preferred_username: z.string(),
       name: z.string(),
       email: z.string(),
-      cnes_vinculo: z.string(),
-      hierarquia_acesso: z.string(),
-    }),
+      cnes_vinculo: z.string().optional(),
+      hierarquia_acesso: z.string().optional(),
+    }).passthrough(),
+    */
   });
+
+
+
 
   function decodeAccessToken(authorizationHeaderValue: string | undefined) {
     if (!authorizationHeaderValue) {

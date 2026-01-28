@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateTbexamehivelisaibDto } from './dto/create-tbexamehivelisaib.dto';
 import { UpdateTbexamehivelisaibDto } from './dto/update-tbexamehivelisaib.dto';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 
 @Injectable()

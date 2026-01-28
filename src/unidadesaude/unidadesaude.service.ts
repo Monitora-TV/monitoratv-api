@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import { CreateUnidadesaudeDto } from './dto/create-unidadesaude.dto';
 import { UpdateUnidadesaudeDto } from './dto/update-unidadesaude.dto';
 import { PrismaService } from 'src/database/prisma.service'; // Prisma para interação com o banco
-import { TenantService } from 'src/tenant/tenant/tenant.service'; // Serviço de Tenant (acesso controlado)
+import { UserContextService } from 'src/auth/user-context/user-context.service';
 import { string } from 'zod';
 import { Prisma, tb_unidade_saude } from '@prisma/client';
 
@@ -14,7 +14,7 @@ export class UnidadesaudeService {
   private readonly prisma: PrismaService;
 
   @Inject()
-  private readonly tenantService: TenantService;
+  private readonly userContextService: UserContextService;
 
 
 
@@ -58,7 +58,7 @@ export class UnidadesaudeService {
 
   // Método para obter todos os registros
   async findAll() {
-    console.log(this.tenantService.hierarquia_acesso);
+    console.log(this.userContextService.hierarquia);
     return await this.prisma.tb_unidade_saude.findMany();
   }
 

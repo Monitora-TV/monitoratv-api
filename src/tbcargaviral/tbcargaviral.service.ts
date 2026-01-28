@@ -3,7 +3,7 @@ import { CreateTbcargaviralDto } from './dto/create-tbcargaviral.dto';
 import { UpdateTbcargaviralDto } from './dto/update-tbcargaviral.dto';
 import { tb_carga_viral } from '@prisma/client';
 import { PrismaService } from 'src/database/prisma.service';
-import { TenantService } from 'src/tenant/tenant/tenant.service';
+import { TenantService } from 'src/tenant/tenant.service';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 import { Prisma } from '@prisma/client';
 
