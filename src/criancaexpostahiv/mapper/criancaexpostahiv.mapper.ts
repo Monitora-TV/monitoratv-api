@@ -44,8 +44,6 @@ export function mapUpdateCriancaExpostaHivDtoToPrisma(
   if (dto.flg_tarv_28_dias !== undefined) {
     data.flg_tarv_28_dias = dto.flg_tarv_28_dias;
   }
-  
-
 
 
   // =====================
@@ -62,6 +60,15 @@ export function mapUpdateCriancaExpostaHivDtoToPrisma(
       connect: { id: dto.id_desfecho_criexp_hiv },
     };
   }
+
+
+  if (dto.id_periodo_arv_nascimento) {
+    data.tb_periodo_arv_nascimento = {
+      connect: { id: dto.id_periodo_arv_nascimento },
+    };
+  }
+
+
 
   if (dto.id_unidade_monitoramento) {
     data.tb_unidade_monitoramento = {
