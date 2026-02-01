@@ -9,6 +9,7 @@ import {
 } from './dto/count-criancaexpostahiv.dto';
 import { UsuariologService } from 'src/usuariolog/usuariolog.service';
 import { Prisma } from '@prisma/client';
+import { mapUpdateCriancaExpostaHivDtoToPrisma } from './mapper/criancaexpostahiv.mapper';
 // Extendendo o dayjs com o plugin utc
 //dayjs.extend(utc);
 
@@ -338,27 +339,22 @@ export class CriancaexpostahivService {
     }
   }
 
+
 async update(id: number, updateCriancaexpostahivDto: any) {
   try {
     /**
-     * Tratamento da data de desfecho (mantendo lógica original)
+     * Tratamento da data de desfecho
      */
     if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv === null) {
       updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = null;
     } else if (updateCriancaexpostahivDto.dt_desfecho_criexp_hiv) {
-      const data = new Date(
-        updateCriancaexpostahivDto.dt_desfecho_criexp_hiv,
-      );
-
-      data.setMinutes(
-        data.getMinutes() + data.getTimezoneOffset(),
-      );
-
+      const data = new Date(updateCriancaexpostahivDto.dt_desfecho_criexp_hiv);
+      data.setMinutes(data.getMinutes() + data.getTimezoneOffset());
       updateCriancaexpostahivDto.dt_desfecho_criexp_hiv = data;
     }
 
     /**
-     * Atualiza vínculo mãe → paciente, se informado
+     * Atualiza vínculo mãe → paciente
      */
     if (
       updateCriancaexpostahivDto.id_paciente_mae !== null &&
@@ -369,11 +365,16 @@ async update(id: number, updateCriancaexpostahivDto: any) {
           id: Number(updateCriancaexpostahivDto.id_paciente),
         },
         data: {
-          id_paciente_mae:
-            updateCriancaexpostahivDto.id_paciente_mae,
+          id_paciente_mae: updateCriancaexpostahivDto.id_paciente_mae,
         },
       });
     }
+
+    /**
+     * 🔥 AQUI entra o mapper
+     */
+    const prismaData =
+      mapUpdateCriancaExpostaHivDtoToPrisma(updateCriancaexpostahivDto);
 
     /**
      * Update principal
@@ -381,11 +382,11 @@ async update(id: number, updateCriancaexpostahivDto: any) {
     const updatedRecord =
       await this.prisma.tb_monitora_criancaexposta_hiv.update({
         where: { id },
-        data: updateCriancaexpostahivDto,
+        data: prismaData,
       });
 
     /**
-     * Log de auditoria (via UserContext)
+     * Log de auditoria
      */
     await this.usuariologService.logAction(
       this.userContext.userId ?? 'system',
@@ -398,9 +399,7 @@ async update(id: number, updateCriancaexpostahivDto: any) {
 
     return updatedRecord;
   } catch (error) {
-    throw new Error(
-      'Erro ao atualizar registro: ' + error.message,
-    );
+    throw new Error('Erro ao atualizar registro: ' + error.message);
   }
 }
 

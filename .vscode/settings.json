@@ -1,5 +1,6 @@
 {
     "cSpell.words": [
         "Criancaexpostahiv"
-    ]
+    ],
+    "prisma.hidePrisma6Prompts": true
 }
