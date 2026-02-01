@@ -20,6 +20,34 @@ export function mapUpdateCriancaExpostaHivDtoToPrisma(
     data.flg_tarv_azt = dto.flg_tarv_azt;
   }
 
+  if (dto.flg_tarv_3tc !== undefined) {
+    data.flg_tarv_3tc  = dto.flg_tarv_3tc;
+  }
+
+
+  if (dto.flg_tarv_nevirapina !== undefined) {
+    data.flg_tarv_nevirapina = dto.flg_tarv_nevirapina;
+  }
+
+  if (dto.flg_tarv_raltegravir !== undefined) {
+    data.flg_tarv_raltegravir = dto.flg_tarv_raltegravir;
+  }
+
+  if (dto.flg_coleta_cv_nascimento !== undefined) {
+    data.flg_coleta_cv_nascimento = dto.flg_coleta_cv_nascimento;
+  }
+
+  if (dto.flg_arv_nascimento !== undefined) {
+    data.flg_arv_nascimento = dto.flg_arv_nascimento;
+  }
+
+  if (dto.flg_tarv_28_dias !== undefined) {
+    data.flg_tarv_28_dias = dto.flg_tarv_28_dias;
+  }
+  
+
+
+
   // =====================
   // RELACIONAMENTOS
   // =====================

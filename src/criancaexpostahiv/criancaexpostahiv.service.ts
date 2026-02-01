@@ -376,7 +376,7 @@ async update(id: number, updateCriancaexpostahivDto: any) {
     const prismaData =
       mapUpdateCriancaExpostaHivDtoToPrisma(updateCriancaexpostahivDto);
 
-    console.log(JSON.stringify(prismaData, null, 2));
+    //console.log(JSON.stringify(prismaData, null, 2));
 
 
     /**
