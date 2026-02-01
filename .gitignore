@@ -3,6 +3,7 @@ dtic-gustavo.k.pem
 dtic-gustavo.k.ppk
 
 # TESTES
+/TestePost
 ApiSMS.http
 Api.http
 keycloak.http
